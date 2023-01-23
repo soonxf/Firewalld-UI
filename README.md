@@ -47,6 +47,22 @@ Micro-Firewall 是一款基于 linux 的 node 微型防火墙,支持自定义创
 ./shell/startup.sh
 ```
 
+### 登录
+
+
+
+默认用户名
+
+```
+admin
+```
+
+默认密码
+
+```
+Admin123456@
+```
+
 ### 部署 https
 
 * 将证书存储在 express/ssl
