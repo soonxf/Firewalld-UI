@@ -47,6 +47,12 @@ Micro-Firewall 是一款基于 linux 的 node 微型防火墙,支持自定义创
 ./shell/startup.sh
 ```
 
+### 部署 https
+
+* 将证书存储在 express/ssl
+* 修改 express/config.js 中的 ssl.key ssl.crt
+
+
 #### 完整启动流程截图
 
 ![dcc1f7f0a1a27f41.png](https://340200.xyz:8014/LightPicture/2023/01/dcc1f7f0a1a27f41.png)
