@@ -1,0 +1,49 @@
+{
+    "startupTime": 300,
+    "clean": {
+        "interval": 15
+    },
+    "jwt": {
+        "expiresIn": 7,
+        "secret": "3fsdtnYAYKSfkPUG3ruG"
+    },
+    "captcha": {
+        "expiresIn": 1,
+        "secret": "bdayO0yklxugBZpIp6il"
+    },
+    "ratelimit": {
+        "max": 100,
+        "duration": 10
+    },
+    "accessLog": {
+        "interval": 30
+    },
+    "firewalld": {
+        "interval": 1,
+        "duration": 1
+    },
+    "believe": {
+        "trust": [
+            "120.242.83.",
+            "120.242.84.",
+            "120.242.85.",
+            "120.242.86.",
+            "120.242.87.",
+            "120.242.88.",
+            "120.242.89.",
+            "36.161.240.",
+            "112.3.250.183",
+            "169.254.",
+            "localhost",
+            "10.",
+            "172.",
+            "192.168.",
+            "127.0.0.1"
+        ],
+        "access": [
+            "112.3.248/255.0/255",
+            "183.14.132.0/255",
+            "183.14.130/255.0/255"
+        ]
+    }
+}

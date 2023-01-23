@@ -1,0 +1,13 @@
+{
+	"required": "必须，不能为空",
+	"missing_field": "字段丢失",
+	"should not be empty": "不能为空",
+	"invalid": "无效",
+	"should be an email": "应该是电子邮件格式",
+	"jwt must be provided": "必须提供 jwt",
+	"Validation Failed": "验证失败",
+	"invalid_param": "验证失败",
+	"should match %s": "should match %s",
+	"should be a number": "should be a number",
+	"should be an array": "should be an array"
+}

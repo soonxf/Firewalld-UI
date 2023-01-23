@@ -1,0 +1,20 @@
+{
+  "include": ["**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "typings",
+    "test",
+    "run",
+    ".github",
+    "logs",
+    "database",
+    ".vscode",
+    ".github",
+    "autostart.sh",
+    "README.md",
+    "express"
+  ]
+}
