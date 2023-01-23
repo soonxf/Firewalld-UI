@@ -72,3 +72,7 @@ Admin123456@
 #### 完整启动流程截图
 
 ![image](https://raw.githubusercontent.com/soonxf/Micro-Firewall/main/images/%E5%90%AF%E5%8A%A8%E6%88%AA%E5%9B%BE.png?token=GHSAT0AAAAAAB5IJMRJMPMQOSMY2RO4NORGY6OTRUA)
+
+#### 部分截图
+
+![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-01-23%20225233.png?raw=true)
