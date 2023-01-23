@@ -14,3 +14,4 @@ run/
 typings/
 .nyc_output/
 !pkg-entry.js
+node
