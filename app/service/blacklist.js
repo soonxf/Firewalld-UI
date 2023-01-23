@@ -51,7 +51,7 @@ class BlacklistService extends Service {
     const { app, ctx } = this;
 
     await ctx.model.Blacklist.update(
-      { time, expirationTimeFormat: ctx.helper.getFormatDate(new Date(time).getTime() + expirationTime * 1000) },
+      { time, expirationTime, expirationTimeFormat: ctx.helper.getFormatDate(new Date(time).getTime() + expirationTime * 1000) },
       { where: { ip } }
     );
 
