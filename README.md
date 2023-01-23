@@ -55,4 +55,4 @@ Micro-Firewall 是一款基于 linux 的 node 微型防火墙,支持自定义创
 
 #### 完整启动流程截图
 
-![dcc1f7f0a1a27f41.png](https://340200.xyz:8014/LightPicture/2023/01/dcc1f7f0a1a27f41.png)
+![image](https://raw.githubusercontent.com/soonxf/Micro-Firewall/main/images/%E5%90%AF%E5%8A%A8%E6%88%AA%E5%9B%BE.png?token=GHSAT0AAAAAAB5IJMRJMPMQOSMY2RO4NORGY6OTRUA)
