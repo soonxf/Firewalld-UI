@@ -1,7 +1,7 @@
 
 ### Micro-Firewall
 
-Micro-Firewall 是一款基于 linux 的 node 微型防火墙,支持自定义创建屏蔽规则,根据规则自动屏蔽 IP
+Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创建屏蔽规则,根据规则自动屏蔽 IP
 
 ##### 要求
 
