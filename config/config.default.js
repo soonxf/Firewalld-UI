@@ -68,7 +68,7 @@ module.exports = appInfo => {
         enable: false,
       },
       ctoken: false,
-      domainWhiteList: ['340200.xyz:8013'], //允许跨域的白名单,为false时不限制跨域
+      domainWhiteList: [], //允许跨域的白名单,为false时不限制跨域
     },
     sequelize: {
       sync: true,

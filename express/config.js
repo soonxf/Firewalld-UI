@@ -18,7 +18,7 @@ module.exports = {
   maxAge: 86400000,
   setTimeout: 30 * 1000,
   ssl: {
-    key: '340200.xyz.key',
-    crt: '340200.xyz_bundle.crt',
+    key: '',
+    crt: '',
   },
 };
