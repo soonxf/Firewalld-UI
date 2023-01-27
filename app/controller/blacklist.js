@@ -61,6 +61,28 @@ class BlacklistController extends Controller {
     });
     ctx.helper.response({ data });
   }
+  async addMultipleBlacklists() {
+    const { ctx } = this;
+
+    ctx.validate({
+      list: {
+        type: 'array',
+        itemType: 'object',
+        rule: {
+          ip: { type: 'string', required: true },
+          port: { type: 'number', required: false },
+          expirationTime: { type: 'string', required: true },
+          site: { type: 'string', required: false },
+          time: { type: 'string', required: true },
+        },
+      },
+    });
+
+    const body = ctx.request.body.list;
+    body.forEach((item, index) => item.site || (item.site = ctx.helper.searcher.memorySearchSync(body.ip)));
+    const { data } = await ctx.service.blacklist.addMultipleBlacklists(body);
+    ctx.helper.response({ data });
+  }
   async updateBlacklistone() {
     const { ctx } = this;
     ctx.validate({

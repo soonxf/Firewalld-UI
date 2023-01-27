@@ -3,6 +3,15 @@
 const Service = require('egg').Service;
 
 class BlacklistService extends Service {
+  async addMultipleBlacklists(body) {
+    const { ctx } = this;
+    const success = [];
+    for await (let item of body) {
+      const { data } = await ctx.service.blacklist.addBlacklist(item);
+      success.push(data);
+    }
+    return ctx.helper.success(success);
+  }
   async addBlacklist({ ip = '', time = '', expirationTime = '', site = '', port = '' }) {
     const { app, ctx } = this;
     const expirationTimeFormat = ctx.helper.getFormatDate(new Date(time).getTime() + expirationTime * 1000);
@@ -16,7 +25,7 @@ class BlacklistService extends Service {
       return stderr || err ? false : true;
     };
 
-    if (response.equalNull) {
+    const sync = async () => {
       if (await drop()) {
         await ctx.model.Blacklist.sync();
         // await ctx.model.Ip.sync();
@@ -26,19 +35,25 @@ class BlacklistService extends Service {
         ctx.helper.ipsCacheDel(ip);
         ctx.helper.ipsCachePut(ip, { ip, port, fullSite: site, expirationTime }, expirationTime);
         await ctx.service.system.addSystem(4, `加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
-        return ctx.helper.success({ ip, success: true, message: '成功' });
+        return { ip, success: true, message: '成功' };
       } else {
-        await this.ctx.service.system.addSystem(4, `加入黑名单失败,可能已经加入防火墙 IP: ${ip} 地点: ${site} 端口: ${port}`);
-        return ctx.helper.success({ ip, success: true, message: '成功' });
+        await this.ctx.service.system.addSystem(4, `加入黑名单失败,可能已经用其他方式加入防火墙 IP: ${ip} 地点: ${site} 端口: ${port}`);
+        return { ip, success: true, message: '加入黑名单失败,可能已经用其他方式加入防火墙' };
       }
-    } else if (response.data?.unblocked) {
-      await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: false });
-      await ctx.service.system.addSystem(4, `重新加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
-      return ctx.helper.success({ ip, success: true, message: '重新加入黑名单成功' });
+    };
+
+    if (response.equalNull) {
+      const message = await sync();
+      return ctx.helper.success(message);
     } else {
-      await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: true });
-      await ctx.service.system.addSystem(4, `修改还在屏蔽黑名单的时间 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
-      return ctx.helper.success({ ip, success: true, message: '修改还在屏蔽黑名单的时间成功' });
+      const unblocked = response?.data?.unblocked ?? false;
+      const message = unblocked ? '重新加入黑名单成功' : '修改还在屏蔽中的黑名单时间成功';
+      const systemMessage = unblocked
+        ? `重新加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`
+        : `修改还在屏蔽黑名单的时间 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`;
+      await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: unblocked == false });
+      await ctx.service.system.addSystem(4, systemMessage);
+      return ctx.helper.success({ ip, success: true, message });
     }
   }
   async findBlacklistOne({ ip }) {

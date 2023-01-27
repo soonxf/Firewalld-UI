@@ -19,6 +19,7 @@ module.exports = app => {
   router.get('/getBlacklist', jwt, controller.blacklist.getBlacklist);
   router.get('/findBlacklistOne', jwt, controller.blacklist.findBlacklistOne);
   router.post('/addBlacklist', jwt, controller.blacklist.addBlacklist);
+  router.post('/addMultipleBlacklists', jwt, controller.blacklist.addMultipleBlacklists);
   router.post('/updateBlacklistOne', jwt, controller.blacklist.updateBlacklistone);
   router.post('/deleteBlacklist', jwt, controller.blacklist.deleteBlacklist);
   router.post('/creatdProject', jwt, controller.project.creatdProject);
