@@ -7,6 +7,7 @@ const Service = require('egg').Service;
 class OverviewController extends Service {
   async getOverview() {
     const { ctx } = this;
+
     const nameListCount = await ctx.model.Blacklist.count();
     const accessCount = await ctx.model.Access.count();
     const ruleCount = await ctx.model.Rule.count();
