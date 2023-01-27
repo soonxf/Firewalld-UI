@@ -100,9 +100,15 @@ class UserController extends Controller {
     });
 
     const publicKey = ctx.helper.getPublicKey();
+
     const captchaSecret = ctx.helper.captchaJwtSecret(`${text}|${stringRandom(20)}`);
 
     ctx.helper.response({ data: { publicKey, captchaSecret, svg } });
+  }
+  async getPublicKeyFingerprint() {
+    const { ctx } = this;
+    const publicKeyFingerprint = ctx.helper.getPublicKeyFingerprint();
+    ctx.helper.response({ data: publicKeyFingerprint });
   }
   async test() {
     const { ctx } = this;

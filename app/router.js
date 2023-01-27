@@ -10,6 +10,7 @@ module.exports = app => {
   const jwt = middleware.jwt(app.config.jwt);
 
   router.get('/captcha', controller.user.captcha);
+  router.get('/getPublicKeyFingerprint', controller.user.getPublicKeyFingerprint);
   router.post('/updatePass', controller.user.updatePass);
   router.post('/register', controller.user.register);
   router.post('/login', controller.user.login);

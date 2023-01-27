@@ -158,7 +158,7 @@ module.exports = {
       const decrypted = rsa.decrypt(msg);
       return decrypted.toString();
     } catch (error) {
-      return '';
+      return new Date().getTime();
     }
   },
   //rsa 加密
@@ -168,7 +168,7 @@ module.exports = {
       const encrypt = rsa.encrypt(msg, 'base64', 'utf8');
       return encrypt.toString();
     } catch (error) {
-      return '';
+      return new Date().getTime();
     }
   },
   // jwt 生成 token
@@ -210,7 +210,10 @@ module.exports = {
     return decode;
   },
   getPublicKey() {
-    return pubKeyToken.toString();
+    return pubKeyToken;
+  },
+  getPublicKeyFingerprint() {
+    return pubKeyFingerprint;
   },
   systemStart() {
     console.log('');
