@@ -15,6 +15,8 @@ class BlacklistController extends Controller {
         ip: { type: 'string', trim: true, required: false },
         startTime: { type: 'date', trim: true, required: false },
         endTime: { type: 'date', trim: true, required: false },
+        sortProp: { type: 'string', required: false },
+        sortOrder: { type: 'string', required: false },
       },
       ctx.query
     );

@@ -85,7 +85,7 @@ class BlacklistService extends Service {
 
     ctx.helper.success((await drop()) ? '失败' : '成功');
   }
-  async getBlacklist({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', unblocked }) {
+  async getBlacklist({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', unblocked, sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx, app } = this;
     const response = await ctx.model.Blacklist.findAndCountAll({
       attributes: [
@@ -130,7 +130,7 @@ class BlacklistService extends Service {
       ),
       offset: (page - 1) * pageSize,
       limit: pageSize,
-      order: [['id', 'DESC']],
+      order: [[sortProp, sortOrder]],
     });
     return ctx.helper.success(response);
   }

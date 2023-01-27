@@ -3,7 +3,7 @@
 const Service = require('egg').Service;
 
 class AccessService extends Service {
-  async getAccessLog({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '' }) {
+  async getAccessLog({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx, app } = this;
 
     const data = await ctx.model.Access.findAndCountAll({
@@ -33,7 +33,7 @@ class AccessService extends Service {
       ),
       offset: (page - 1) * pageSize,
       limit: pageSize,
-      order: [['id', 'DESC']],
+      order: [[sortProp, sortOrder]],
     });
     return ctx.helper.success(data);
   }
