@@ -106,9 +106,9 @@ class UserController extends Controller {
     ctx.helper.response({ data: { publicKey, captchaSecret, svg } });
   }
   async getPublicKeyFingerprint() {
-    const { ctx } = this;
+    const { ctx, app } = this;
     const publicKeyFingerprint = ctx.helper.getPublicKeyFingerprint();
-    ctx.helper.response({ data: publicKeyFingerprint });
+    ctx.helper.response({ data: { publicKeyFingerprint, xfwd: app.ipMatch(ctx.request.header['x-forwarded-for'])?.join('') ?? null } });
   }
   async test() {
     const { ctx } = this;
