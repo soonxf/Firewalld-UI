@@ -52,9 +52,14 @@ class UserController extends Controller {
 
     ctx.helper.captchaCheck(playload, code);
 
-    if (jwtSecret !== ctx.app.config.jwt.secret) return;
-    const data = await ctx.service.user.updateUserOne({ username, password, secret });
-    ctx.helper.response(data);
+    if (jwtSecret == ctx.app.config.jwt.secret) {
+      const data = await ctx.service.user.updateUserOne({ username, password, secret });
+      ctx.helper.response(data);
+    } else
+      ctx.helper.response({
+        success: false,
+        message: '修改失败',
+      });
   }
   async login() {
     const { ctx } = this;
