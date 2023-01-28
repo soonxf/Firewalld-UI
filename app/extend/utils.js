@@ -50,6 +50,21 @@ module.exports = {
   seq: {
     Op,
   },
+  async seqTransaction(callBack) {
+    const { ctx } = this;
+    const transaction = await ctx.model.transaction();
+    try {
+      const response = await callBack();
+      await transaction.commit();
+      return response;
+    } catch (error) {
+      const message = `事务执行失败 ${error.toString()}`;
+      await transaction.rollback();
+      await ctx.service.system.addSystem(13, message);
+      this.app.getLogger('system').info('', message);
+      return { data: null };
+    }
+  },
   status,
   searcher,
   throw(message) {

@@ -5,59 +5,62 @@ const Service = require('egg').Service;
 class AccessService extends Service {
   async getAccessLog({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx, app } = this;
-
-    const data = await ctx.model.Access.findAndCountAll({
-      raw: true,
-      include: [
-        {
-          attributes: [app.Sequelize.literal('project.name')],
-          model: ctx.model.Project,
-          as: 'project',
-        },
-      ],
-      where: ctx.helper.where(
-        [startTime && endTime, port, ip],
-        [
+    return await ctx.helper.seqTransaction(async () => {
+      const data = await ctx.model.Access.findAndCountAll({
+        raw: true,
+        include: [
           {
-            time: {
-              [ctx.helper.seq.Op.between]: ctx.helper.betweenTime(startTime, endTime),
-            },
+            attributes: [app.Sequelize.literal('project.name')],
+            model: ctx.model.Project,
+            as: 'project',
           },
-          { port },
-          {
-            ip: {
-              [ctx.helper.seq.Op.like]: `%${ip}%`,
+        ],
+        where: ctx.helper.where(
+          [startTime && endTime, port, ip],
+          [
+            {
+              time: {
+                [ctx.helper.seq.Op.between]: ctx.helper.betweenTime(startTime, endTime),
+              },
             },
-          },
-        ]
-      ),
-      offset: (page - 1) * pageSize,
-      limit: pageSize,
-      order: [[sortProp, sortOrder]],
+            { port },
+            {
+              ip: {
+                [ctx.helper.seq.Op.like]: `%${ip}%`,
+              },
+            },
+          ]
+        ),
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+        order: [[sortProp, sortOrder]],
+      });
+      return ctx.helper.success(data);
     });
-    return ctx.helper.success(data);
   }
   async findAllAccessLog({ ip, startTime, endTime }) {
     const { ctx } = this;
-    const data = await ctx.model.Access.findAndCountAll({
-      where: ctx.helper.where(
-        [startTime && endTime, ip],
-        [
-          {
-            time: {
-              [ctx.helper.seq.Op.between]: [startTime, endTime],
+    return await ctx.helper.seqTransaction(async () => {
+      const data = await ctx.model.Access.findAndCountAll({
+        where: ctx.helper.where(
+          [startTime && endTime, ip],
+          [
+            {
+              time: {
+                [ctx.helper.seq.Op.between]: [startTime, endTime],
+              },
             },
-          },
-          {
-            ip: {
-              [ctx.helper.seq.Op.like]: `%${ip}%`,
+            {
+              ip: {
+                [ctx.helper.seq.Op.like]: `%${ip}%`,
+              },
             },
-          },
-        ]
-      ),
-      order: [['id', 'DESC']],
+          ]
+        ),
+        order: [['id', 'DESC']],
+      });
+      return ctx.helper.success(data);
     });
-    return ctx.helper.success(data);
   }
   async addAccessLog(params) {
     const { ctx } = this;
@@ -75,16 +78,18 @@ class AccessService extends Service {
     await log.save();
   }
   async deleteAccessLog({ ids }) {
-    const { ctx } = this;
-    for await (let id of ids) {
-      await ctx.model.Access.destroy({
-        where: { id },
+    const { ctx, app } = this;
+    return await ctx.helper.seqTransaction(async () => {
+      for await (let id of ids) {
+        await ctx.model.Access.destroy({
+          where: { id },
+        });
+        // await ctx.model.Access.sync({ force: true });
+      }
+      await ctx.service.system.addSystem(8, `删除日志 ${ids.length} 条`);
+      return ctx.helper.success({
+        data: '成功',
       });
-      // await ctx.model.Access.sync({ force: true });
-    }
-    await ctx.service.system.addSystem(8, `删除日志 ${ids.length} 条`);
-    return ctx.helper.success({
-      data: '成功',
     });
   }
 }
