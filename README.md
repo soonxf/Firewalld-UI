@@ -70,6 +70,7 @@ Admin123456@
 
 > 项目根目录打开终端执行
 > 将 你的用户名 修改为自己注册的用户名
+> linux 环境下执行,没有自带 sqlite3 环境需要自行下载
 
 ```
 sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";'
