@@ -128,27 +128,26 @@ class BlacklistService extends Service {
   async deleteBlacklist({ ids }) {
     const { ctx, app } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let id of ids) {
-        const data = await ctx.model.Blacklist.findOne({
-          where: { id },
-        });
+      const { rows } = await ctx.model.Blacklist.findAndCountAll({
+        where: {
+          id: ids,
+        },
+      });
 
-        data?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${data.ip}" drop"`));
+      for await (let item of rows) {
+        item?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${item.ip}" drop"`));
 
-        await ctx.model.Blacklist.destroy({
-          where: { id },
-        });
-        ctx.helper.ipsCacheDel(data.ip);
+        ctx.helper.ipsCacheDel(item.ip);
 
-        await this.ctx.service.system.addSystem(5, `移除黑名单 IP ${data.ip}`);
-        app.getLogger('drop').info('黑名单', `删除 IP ${data.ip}`);
+        await this.ctx.service.system.addSystem(5, item?.unblocked ? `移除已解禁黑名单 IP ${item.ip}` : `移除屏蔽中黑名单 IP ${item.ip}`);
+        app.getLogger('drop').info('黑名单', `删除 IP ${item.ip}`);
       }
 
-      // const res = stderr || err ? false : true;
-      // res && (await app.startUp(false));
-      return ctx.helper.success({
-        data: '成功',
+      await ctx.model.Blacklist.destroy({
+        where: { id: ids },
       });
+
+      return ctx.helper.success('成功');
     });
   }
 }

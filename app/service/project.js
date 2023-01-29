@@ -65,26 +65,23 @@ class ProjectService extends Service {
           }
         );
       }
-      return ctx.helper.success({
-        data: '成功',
-      });
+      return ctx.helper.success('成功');
     });
   }
   async deleteProject({ ids }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let id of ids) {
-        const response = await ctx.model.Project.findOne({
-          where: { id },
-        });
-        await ctx.service.system.addSystem(7, `删除项目,项目名称:${response.name} 项目端口:${response.port}`);
-        await ctx.model.Project.destroy({
-          where: { id },
-        });
-      }
-      return ctx.helper.success({
-        data: '成功',
+      const { rows } = await ctx.model.Project.findAndCountAll({
+        where: { id: ids },
       });
+
+      rows.forEach((item, index) => ctx.service.system.addSystem(7, `删除项目,项目名称:${item.name} 项目端口:${item.port}`));
+
+      await ctx.model.Project.destroy({
+        where: { id: ids },
+      });
+
+      return ctx.helper.success('成功');
     });
   }
 }

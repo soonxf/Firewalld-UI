@@ -80,16 +80,11 @@ class AccessService extends Service {
   async deleteAccessLog({ ids }) {
     const { ctx, app } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let id of ids) {
-        await ctx.model.Access.destroy({
-          where: { id },
-        });
-        // await ctx.model.Access.sync({ force: true });
-      }
-      await ctx.service.system.addSystem(8, `删除日志 ${ids.length} 条`);
-      return ctx.helper.success({
-        data: '成功',
+      const count = await ctx.model.Access.destroy({
+        where: { id: ids },
       });
+      await ctx.service.system.addSystem(8, `删除日志 ${count} 条`);
+      return ctx.helper.success('成功');
     });
   }
 }

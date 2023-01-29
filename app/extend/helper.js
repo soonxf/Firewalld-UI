@@ -37,6 +37,13 @@ module.exports = {
       equalNull: data || !this._.isEmpty(data) ? false : true,
     };
   },
+  whereOr(arr) {
+    return arr.map(item => {
+      return {
+        [this.seq.Op.or]: item,
+      };
+    });
+  },
   where(where, condition) {
     let query = {};
     where.length == condition.length

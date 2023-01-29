@@ -44,24 +44,17 @@ class RuleService extends Service {
           }
         );
       }
-      return ctx.helper.success({
-        data: '成功',
-      });
+      return ctx.helper.success('成功');
     });
   }
   async deleteRule({ ids }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let id of ids) {
-        await ctx.model.Rule.destroy({
-          where: { id },
-        });
-        // await ctx.model.Access.sync({ force: true });
-      }
-      await ctx.service.system.addSystem(10, `删除规则 ${ids.length} 条`);
-      return ctx.helper.success({
-        data: '成功',
+      await ctx.model.Rule.destroy({
+        where: { id: ids },
       });
+      await ctx.service.system.addSystem(10, `删除规则 ${ids.length} 条`);
+      return ctx.helper.success('成功');
     });
   }
 }

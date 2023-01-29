@@ -40,15 +40,10 @@ class SystemService extends Service {
   async deleteSystem({ ids }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let id of ids) {
-        await ctx.model.System.destroy({
-          where: { id },
-        });
-        // await ctx.model.Access.sync({ force: true });
-      }
-      return ctx.helper.success({
-        data: '成功',
+      await ctx.model.System.destroy({
+        where: { id: ids },
       });
+      return ctx.helper.success('成功');
     });
   }
 }
