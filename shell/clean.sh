@@ -18,3 +18,7 @@ sh $DIR/shell/reload.sh>>$DIR/shell/shell.log
 # 根目录/database 目录下
 # sqlite3 ./sqlite-prod.db "DELETE FROM accesss;"
 # sqlite3 ./sqlite-prod.db 'VACUUM;'
+
+#根目录
+# sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";'
+# grep secret ./config.json | head -n 1

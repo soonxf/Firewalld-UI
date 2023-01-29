@@ -54,8 +54,6 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 
 ### 登录
 
-
-
 默认用户名
 
 ```
@@ -67,6 +65,24 @@ admin
 ```
 Admin123456@
 ```
+
+### 查看注册口令
+
+> 项目根目录打开终端执行
+> 将 你的用户名 修改为自己注册的用户名
+
+```
+sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";'
+```
+
+### 查看 JWT 密钥
+
+> 项目根目录打开终端执行
+
+```
+grep secret ./config.json | head -n 1
+```
+
 
 ### 部署 https
 
