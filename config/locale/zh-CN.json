@@ -9,5 +9,6 @@
 	"invalid_param": "验证失败",
 	"should match %s": "should match %s",
 	"should be a number": "should be a number",
-	"should be an array": "should be an array"
+	"should be an array": "should be an array",
+	"should be an object": "should be an object"
 }

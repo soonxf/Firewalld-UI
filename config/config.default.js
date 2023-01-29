@@ -68,7 +68,7 @@ module.exports = appInfo => {
         enable: false,
       },
       ctoken: false,
-      domainWhiteList: [], //允许跨域的白名单,为false时不限制跨域
+      domainWhiteList: ['340200.xyz:8013'], //允许跨域的白名单,为false时不限制跨域
     },
     sequelize: {
       sync: true,
@@ -125,7 +125,7 @@ module.exports = appInfo => {
       duration: ratelimit.duration * 60 * 1000,
       max: ratelimit.max,
       errorMessage: '访问限制,请稍后再试!',
-      id: ctx => ctx.ip,
+      id: ctx => ctx.app.ipMatch(ctx.request.header?.['x-forwarded-for'])?.join('') ?? ctx.ip,
       headers: {
         remaining: 'Rate-Limit-Remaining',
         reset: 'Rate-Limit-Reset',
