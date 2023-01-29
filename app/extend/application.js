@@ -6,12 +6,6 @@ module.exports = {
   //查询是否刚开机查询黑名单(开机180秒内启动即算刚开机),
   ipsCache: [],
   watchPort: [15800, 15700, 5800, 5700, 5566, 7998, 7999, 17017, 5602, 5601, 5600, 13389, 8022, 8007, 8026, 13306, 5001, 5000],
-  ip: ['120.242.83/89.0/255', '112.3.248/255.0/255', '183.14.132.0/255', '183.14.130/255.0/255', '120.242.89.68', '112.3.250.183'],
-  whiteCountry: [],
-  whiteProvince: [],
-  whiteCity: ['南京'],
-  // whiteCity: [],
-
   isStartUp() {
     const { ctx } = this;
     return new Promise(async (resolve, reject) => {
@@ -50,7 +44,6 @@ module.exports = {
     startUp == false && del && (reload = true);
     //在数据库中查询黑名单,查询到的重新添加到防火墙规则中(因为开机会丢失非永久性的防火墙富规则)
     const { data } = await ctx.service.blacklist.getBlacklist({ page: 1, pageSize: 10000 });
-    if (data?.rows.length == 0) return;
     for await (let item of data?.rows) {
       //0表示永久禁用
       if (item.expirationTime == 0) continue;
@@ -58,21 +51,20 @@ module.exports = {
       //小于0表示已经解封
       if (item.unblocked) continue;
 
-      let surplus = parseInt(item.expirationTime * 1000 - (new Date().getTime() - new Date(item.time).getTime()) / 1000);
+      let surplus = parseInt((item.expirationTime * 1000 - (new Date().getTime() - new Date(item.time).getTime()) / 1000) / 1000);
+
+      ctx.helper.ipsCachePut(item.ip, { ip: item.ip, port: item.port, fullSite: item.site, expirationTime: surplus }, surplus);
 
       if (reload) {
-        ctx.helper.ipsCachePut(item.ip, { ip: item.ip, port: item.port, fullSite: item.site, expirationTime: surplus }, surplus);
         this.getLogger('drop').info('重启服务在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
         ctx.service.system.addSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
-        continue;
+      } else {
+        const { err, stdout, stderr } = await ctx.helper.drop(item.ip, surplus);
+        stdout && del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
+        stderr && this.getLogger('drop').info('黑名单', `重复加入 ${item.ip} ${stderr}`);
+        err && this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`);
+        stdout && del && ctx.service.system.addSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
       }
-
-      const { err, stdout, stderr } = await ctx.helper.drop(item.ip, surplus);
-      ctx.helper.ipsCachePut(item.ip, { ip: item.ip, port: item.port, fullSite: item.site, expirationTime: surplus }, surplus);
-      stdout && del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
-      stderr && this.getLogger('drop').info('黑名单', `重复加入 ${item.ip} ${stderr}`);
-      err && this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`);
-      stdout && del && ctx.service.system.addSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
     }
   },
   parseIpSite(ip) {
@@ -137,11 +129,6 @@ module.exports = {
     isDrop || (success = await ctx.helper.newIpset());
     return success;
   },
-  async forData(data) {
-    for await (let item of data) {
-      await this.addIpsCache(item);
-    }
-  },
   parseIp(value) {
     const { ctx } = this;
     const data = value.split(/\s/);
@@ -178,16 +165,8 @@ module.exports = {
       return true;
     }
   },
-  isCitySkip(site) {
-    return this.whiteCity.some(item => site.city.indexOf(item) != -1 || item.indexOf(site.city) != -1) ||
-      this.whiteProvince.some(item => site.province.indexOf(item) != -1 || item.indexOf(site.province) != -1) ||
-      this.whiteCountry.some(item => site.country.indexOf(item) != -1 || item.indexOf(site.country) != -1)
-      ? true
-      : false;
-  },
   async drop(ip, port, fullSite, expirationTime) {
     const { ctx } = this;
-
     const time = ctx.helper.getFormatNowDate();
     const {
       data: { success, message },
@@ -261,7 +240,11 @@ module.exports = {
     this.loader.loadToApp(directory, 'validate');
     await this.startUp();
     this.ctx.helper.systemStart();
-    this.messenger.on('netstat', data => this.ctx.runInBackground(async () => await this.forData(data)));
+    this.messenger.on('netstat', data =>
+      this.ctx.runInBackground(async () => {
+        for await (let item of data) await this.addIpsCache(item);
+      })
+    );
   },
   beforeClose() {
     this.ctx = this.createAnonymousContext();

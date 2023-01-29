@@ -100,6 +100,9 @@ module.exports = {
       //这是缓存失效的回调不是插入成功的回调
     });
   },
+  ipsCacheKeys() {
+    return ipsCache.keys();
+  },
   ipsCacheGet(ip) {
     return ipsCache.get(`ip-${ip}`);
   },
@@ -107,12 +110,13 @@ module.exports = {
     return ipsCache.get(`ip-${ip}`) != null;
   },
   ipsCachePut(ip, data, expirationTime) {
+    ipsCache.del(`ip-${ip}`);
     ipsCache.put(`ip-${ip}`, data, expirationTime * 1000, (key, value) => {
       //这是缓存失效的回调,不是插入成功的回调
     });
   },
   ipsCacheDel(ip) {
-    ipsCache.del(`ip-${ip}`);
+    return ipsCache.del(`ip-${ip}`);
   },
   drop(ip, time) {
     return new Promise((resolve, reject) => {
@@ -121,6 +125,13 @@ module.exports = {
         resolve({ err, stdout, stderr });
       });
     });
+  },
+  async dropCommand(ip, expirationTime) {
+    const { stdout, stderr, err } = await this.drop(ip, expirationTime);
+    stdout && this.app.getLogger('drop').info('黑名单', `ip ${ip}  禁止时间  ${expirationTime} 秒`);
+    stderr && this.app.getLogger('drop').info('黑名单', `重复加入 ${ip}`);
+    err && this.app.getLogger('drop').info('黑名单', `加入黑名单失败 ${ip}`);
+    return stderr || err ? false : true;
   },
   ipsCacheKeys() {
     return ipsCache.keys();
