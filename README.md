@@ -46,11 +46,11 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 * 检测开机启动,自动追加开机脚本(/etc/rc.d/rc.local)
 * 检测完环境后自动启动前后端服务,默认端口 http:5000,https:5001
 
-> 启动完成浏览器打开 本机IP:5000(5001)
-
 ```
 ./shell/startup.sh
 ```
+
+> 启动完成浏览器打开 本机IP:5000(5001)
 
 ### 登录
 
@@ -68,11 +68,11 @@ Admin123456@
 
 ### 查看注册口令
 
-> 项目根目录打开终端执行
-> 
-> 将 你的用户名 修改为自己注册的用户名
-> 
+> 项目根目录打开终端执行,
+>
 > linux 环境下执行,没有自带 sqlite3 环境需要自行下载
+>
+> 将 你的用户名 (五个汉字)替换为自己注册的用户名,完整复制不要丢失
 
 ```
 sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";'
@@ -91,6 +91,9 @@ grep secret ./config.json | head -n 1
 
 * 将证书存储在 express/ssl
 * 修改 express/config.js 中的 ssl.key ssl.crt
+* 重启生效
+
+> ssl.key ssl.crt 填入文件名即可,不需要路径,空 (表示空 == "") 表示不启用 https
 
 
 #### 完整启动流程截图
