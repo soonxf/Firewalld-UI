@@ -133,8 +133,7 @@ class BlacklistService extends Service {
           where: { id },
         });
 
-        data?.unblocked == false &&
-          (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${data.ip}" drop"`));
+        data?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${data.ip}" drop"`));
 
         await ctx.model.Blacklist.destroy({
           where: { id },
