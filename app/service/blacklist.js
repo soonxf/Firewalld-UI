@@ -116,9 +116,13 @@ class BlacklistService extends Service {
               },
             },
             {
-              site: {
-                [ctx.helper.seq().Op.like]: `%${site}%`,
-              },
+              [ctx.helper.seq().Op.and]: site.split('').map(item => {
+                return {
+                  site: {
+                    [ctx.helper.seq().Op.like]: `%${item}%`,
+                  },
+                };
+              }),
             },
           ]
         ),
