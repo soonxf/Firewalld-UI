@@ -10,7 +10,7 @@
 
 > 演示环境没有部署在 linux ,因此很多功能是失效的
 
-<a style="font-size:30px" href="http://340200.xyz:65000" target="_blank">点击查看演示</a>
+## [点击查看演示](http://340200.xyz:65000?_blank)
 
 ### Micro-Firewall
 
