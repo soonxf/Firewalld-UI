@@ -24,14 +24,21 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 
 > 脚本会检测安装 除 firewalld 防火墙外的所有环境,可以实现一键部署启动
 
-##### 特点
+##### 项目介绍和技术栈
 
-* 自动化屏蔽 IP,可以根据 IP 归属地屏蔽
 * 前端基于 Vue(element UI), 后端 基于 nodejs(eggjs)
-* 部署简单,一键化部署前端后端,支持 http,https部署
-* 使用 rsa 加密重要信息,更加安全
+* vuex 和 数据持久化, pm2 管理和部署项目, pkg 打包前端静态资源
+* express 部署前端 https 静态资源,使用 limiter 帽子防护 xss 等攻击
+* 使用 jwt 和 浏览器指纹维护前端的登录状态
+* 基于 sqlite3 的数据库存储,全部接口引入事务
+* 前后端 根据 IP 的限流措施
+* linux 防火墙 firewall 的使用
+* shell 脚本的使用,检测环境和下载依赖等
+* 自动化屏蔽 IP,可以根据 IP 归属地屏蔽
+* 部署简单,一键化部署前端后端
+* 使用 rsa 加密 token 和 指纹等信息
 
-### 目录和文件介绍
+### 目录和文件
 
 * shell: 自动化脚本目录
 * secretKey: 存放 rsa 密钥,用于加密 token 和 指纹
