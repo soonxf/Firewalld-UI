@@ -5,8 +5,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const seq = require('sequelize');
-const Op = seq.Op;
+// const seq = require('sequelize');
+// const Op = seq.Op;
 
 const status = require(path.join(__dirname, './status'));
 
@@ -47,8 +47,8 @@ module.exports = {
   //lodash
   _,
   configDb,
-  seq: {
-    Op,
+  seq() {
+    return this.app.Sequelize;
   },
   async seqTransaction(callBack) {
     const { ctx } = this;
@@ -118,11 +118,25 @@ module.exports = {
   ipsCacheDel(ip) {
     return ipsCache.del(`ip-${ip}`);
   },
+  async blacklistCreate({ ip, expirationTime, site, port, time, expirationTimeFormat }) {
+    const { ctx } = this;
+    if (await ctx.helper.dropCommand(ip, expirationTime)) {
+      await ctx.model.Blacklist.sync();
+      const blacklist = await ctx.model.Blacklist.create({ ip, expirationTime, site, port, time, expirationTimeFormat });
+      await blacklist.save();
+      ctx.helper.ipsCachePut(ip, { ip, port, fullSite: site, expirationTime }, expirationTime);
+      await ctx.service.system.addSystem(4, `加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
+      return { ip, success: true, message: '加入黑名单成功' };
+    } else {
+      await this.ctx.service.system.addSystem(4, `加入黑名单失败,可能已经用其他方式加入防火墙 IP: ${ip} 地点: ${site} 端口: ${port}`);
+      return { ip, success: false, message: '加入黑名单失败,可能已经用其他方式加入防火墙' };
+    }
+  },
   drop(ip, time) {
     return new Promise((resolve, reject) => {
       const command = `firewall-cmd  --add-rich-rule='rule family=ipv4 source address="${ip}"  drop' --timeout=${time}`;
       exec(command, (err, stdout, stderr) => {
-        resolve({ err, stdout, stderr });
+        resolve({ err, stdout, stderr, success: stderr || err ? false : true });
       });
     });
   },
@@ -145,7 +159,7 @@ module.exports = {
   command(command = '') {
     return new Promise((resolve, reject) => {
       exec(command, (err, stdout, stderr) => {
-        resolve({ stdout, stderr, err });
+        resolve({ stdout, stderr, err, success: stderr || err ? false : true });
       });
     });
   },

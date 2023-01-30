@@ -36,7 +36,7 @@ class OverviewController extends Service {
               [
                 {
                   time: {
-                    [ctx.helper.seq.Op.between]: [item.startTime, item.endTime],
+                    [ctx.helper.seq().Op.between]: [item.startTime, item.endTime],
                   },
                 },
               ]

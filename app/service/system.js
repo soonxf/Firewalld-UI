@@ -25,7 +25,7 @@ class SystemService extends Service {
           [
             {
               time: {
-                [ctx.helper.seq.Op.between]: ctx.helper.betweenTime(startTime, endTime),
+                [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
               },
             },
           ]

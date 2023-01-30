@@ -40,7 +40,7 @@ module.exports = {
   whereOr(arr) {
     return arr.map(item => {
       return {
-        [this.seq.Op.or]: item,
+        [this.seq().Op.or]: item,
       };
     });
   },

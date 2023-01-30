@@ -50,8 +50,7 @@ module.exports = app => {
         unblocked: {
           type: DataTypes.VIRTUAL,
           get() {
-            return new Date().getTime() - new Date(this.time).getTime() > this.expirationTime * 1000;
-            // return new Date().getTime() - new Date(this.getDataValue('time')).getTime() > this.getDataValue('expirationTime') * 1000;
+            return Date.now() - new Date(this.time).getTime() > this.expirationTime * 1000;
           },
           set(value) {
             throw new Error('不要尝试设置 unblocked 的值!');
@@ -61,7 +60,6 @@ module.exports = app => {
           type: DataTypes.VIRTUAL,
           get() {
             return this.unblocked ? '允许' : '屏蔽';
-            // return this.getDataValue('unblocked') ? '允许' : '屏蔽';
           },
           set(value) {
             throw new Error('不要尝试设置 `unblockedText` 的值!');

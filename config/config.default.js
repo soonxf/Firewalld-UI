@@ -77,9 +77,13 @@ module.exports = appInfo => {
     },
     onerror: {
       all(err, ctx) {
-        ctx.status = 200;
-        let message = ctx.helper.status[err.name](err) ?? '未知错误';
-        ctx.helper.response({ success: false, message });
+        try {
+          ctx.status = 200;
+          let message = ctx.helper.status?.[err.name]?.(err) ?? '未知错误';
+          ctx.helper.response({ success: false, message });
+        } catch (error) {
+          ctx.helper.response({ success: false });
+        }
       },
       html(err, ctx) {
         // html hander
@@ -125,7 +129,10 @@ module.exports = appInfo => {
       duration: ratelimit.duration * 60 * 1000,
       max: ratelimit.max,
       errorMessage: '访问限制,请稍后再试!',
-      id: ctx => ctx.app.ipMatch(ctx.request.header?.['x-forwarded-for'])?.join('') ?? ctx.ip,
+      id: ctx => {
+        const xwf = ctx.request.header?.['x-forwarded-for'];
+        return xwf ? ctx.app.ipMatch().join('') : ctx.ip;
+      },
       headers: {
         remaining: 'Rate-Limit-Remaining',
         reset: 'Rate-Limit-Reset',

@@ -86,7 +86,7 @@ module.exports = {
       fullSite,
     };
   },
-  ipMatch: str => str.match(/(\d{1,3}\.){3}\d{1,3}/g),
+  ipMatch: str => str.match?.(/(\d{1,3}\.){3}\d{1,3}/g),
   parseIp(value) {
     const data = value.split(/\s/);
     const connectionTime = `${data[5]} ${data[6]}`;

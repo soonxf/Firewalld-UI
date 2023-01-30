@@ -16,6 +16,11 @@ const custom = error => {
   return error.message;
 };
 
+const TypeError = error => {
+  return error.message;
+};
+
 module.exports.custom = custom;
 module.exports.UnprocessableEntityError = UnprocessableEntityError;
 module.exports.TokenExpiredError = TokenExpiredError;
+module.exports.TypeError = TypeError;
