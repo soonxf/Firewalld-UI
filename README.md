@@ -10,7 +10,7 @@
 
 > 演示环境没有部署在 linux ,因此很多功能是失效的
 
-## [点击查看演示](http://340200.xyz:65000)
+## [点击查看演示](https://340200.xyz:65001)
 
 ### Micro-Firewall
 
@@ -54,8 +54,16 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 * 检测开机启动,自动追加开机脚本(/etc/rc.d/rc.local)
 * 检测完环境后自动启动前后端服务,默认端口 http:5000,https:5001
 
+> 项目根目录运行
+
 ```
 ./shell/startup.sh
+```
+
+或者
+
+```
+chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 ```
 
 > 启动完成浏览器打开 本机IP:5000(5001)
