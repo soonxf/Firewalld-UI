@@ -30,8 +30,8 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 * vuex 和 数据持久化, pm2 管理和部署项目, pkg 打包前端静态资源
 * express 部署前端 https 静态资源,使用 limiter 帽子防护 xss 等攻击
 * 使用 jwt 和 浏览器指纹维护前端的登录状态
-* 基于 sqlite3 的数据库存储,全部接口引入事务
 * 前后端 根据 IP 的限流措施
+* 基于 sqlite3 的数据库存储,接口使用事务处理数据
 * linux 防火墙 firewall 的使用
 * shell 脚本的使用,检测环境和下载依赖等
 * 自动化屏蔽 IP,可以根据 IP 归属地屏蔽
