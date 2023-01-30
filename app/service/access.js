@@ -3,7 +3,7 @@
 const Service = require('egg').Service;
 
 class AccessService extends Service {
-  async getAccessLog({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', sortProp = 'id', sortOrder = 'DESC' }) {
+  async getAccessLog({ page = 1, site = '', pageSize = 10, ip = '', port = '', startTime = '', endTime = '', sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx, app } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Access.findAndCountAll({
@@ -16,7 +16,7 @@ class AccessService extends Service {
           },
         ],
         where: ctx.helper.where(
-          [startTime && endTime, port, ip],
+          [startTime && endTime, port, ip, site],
           [
             {
               time: {
@@ -27,6 +27,11 @@ class AccessService extends Service {
             {
               ip: {
                 [ctx.helper.seq().Op.like]: `%${ip}%`,
+              },
+            },
+            {
+              site: {
+                [ctx.helper.seq().Op.like]: `%${site}%`,
               },
             },
           ]

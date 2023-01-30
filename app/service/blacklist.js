@@ -62,7 +62,18 @@ class BlacklistService extends Service {
       return ctx.helper.success(await ctx.helper.dropCommand(ip, expirationTime));
     });
   }
-  async getBlacklist({ page = 1, pageSize = 10, ip = '', port = '', startTime = '', endTime = '', unblocked, sortProp = 'id', sortOrder = 'DESC' }) {
+  async getBlacklist({
+    page = 1,
+    pageSize = 10,
+    ip = '',
+    site,
+    port = '',
+    startTime = '',
+    endTime = '',
+    unblocked,
+    sortProp = 'id',
+    sortOrder = 'DESC',
+  }) {
     const { ctx, app } = this;
     return await ctx.helper.seqTransaction(async () => {
       const response = await ctx.model.Blacklist.findAndCountAll({
@@ -86,7 +97,7 @@ class BlacklistService extends Service {
           },
         ],
         where: ctx.helper.where(
-          [startTime && endTime, port, ip, unblocked != ''],
+          [startTime && endTime, port, ip, unblocked != '', site],
           [
             {
               time: {
@@ -102,6 +113,11 @@ class BlacklistService extends Service {
             {
               expirationTimeFormat: {
                 [unblocked == 'true' ? ctx.helper.seq().Op.lte : ctx.helper.seq().Op.gte]: ctx.helper.getFormatNowDate(),
+              },
+            },
+            {
+              site: {
+                [ctx.helper.seq().Op.like]: `%${site}%`,
               },
             },
           ]
