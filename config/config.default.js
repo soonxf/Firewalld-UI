@@ -131,7 +131,7 @@ module.exports = appInfo => {
       errorMessage: '访问限制,请稍后再试!',
       id: ctx => {
         const xwf = ctx.request.header?.['x-forwarded-for'];
-        return xwf ? ctx.app.ipMatch().join('') : ctx.ip;
+        return xwf ? ctx.app.ipMatch(xwf).join('') : ctx.ip;
       },
       headers: {
         remaining: 'Rate-Limit-Remaining',
