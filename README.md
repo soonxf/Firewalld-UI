@@ -88,7 +88,7 @@ sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "�
 
 ### 查看 JWT 密钥
 
-> 项目根目录打开终端执行
+> 项目根目录打开 linux 终端执行
 
 ```
 grep secret ./config.json | head -n 1
