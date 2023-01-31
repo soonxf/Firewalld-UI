@@ -27,12 +27,13 @@ class OverviewController extends Service {
         });
       }
       const access = [];
+
       for await (let item of dates) {
         access.unshift({
           date: item.date,
           count: await ctx.model.Access.count({
             where: ctx.helper.where(
-              [item.startTime && item.endTime],
+              [true],
               [
                 {
                   time: {
