@@ -16,12 +16,12 @@ class SystemService extends Service {
       });
     });
   }
-  async getSystem({ page = 1, pageSize = 10, startTime, endTime, ip, type, sortProp = 'id', sortOrder = 'DESC' }) {
+  async getSystem({ page = 1, pageSize = 10, startTime = '', endTime = '', ip = '', type = '', sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.System.findAndCountAll({
         where: ctx.helper.where(
-          [startTime && endTime, ip, type],
+          [startTime != '' && endTime != '', ip != '', type != ''],
           [
             {
               time: {

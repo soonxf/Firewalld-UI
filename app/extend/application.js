@@ -16,7 +16,6 @@ module.exports = {
             resolve(false);
           } else {
             const time = this.config?.startupTime ?? 300;
-            console.log('-------------------------------------------');
             const startTime = stdout.split(/\s{1,}/)?.[0] ?? 1000000;
             ctx.helper.serviceAddSystem(11, `查询开机时间成功,开机时间 ${startTime} 秒`);
             resolve(startTime < time ? true : false);
