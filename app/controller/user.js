@@ -27,12 +27,15 @@ class UserController extends Controller {
 
     const { equalNull } = await ctx.service.user.findUserOne({ username });
 
-    const { data } = await ctx.service.user.findUserCount();
+    const {
+      data: { count },
+    } = await ctx.service.user.findUserCount();
 
-    if (!equalNull || data.count != 0) return ctx.helper.response({ success: false, message: '已经注册过' });
+    (equalNull == false || count != 0) &&
+      ctx.helper.throw('已经注册过', () => ctx.helper.serviceAddSystem(16, `用户名 ${username}  注册失败,已经注册过`));
 
     const response = await ctx.service.user.register({ username, password, secret });
-    ctx.helper.response({ data: response.data });
+    ctx.helper.response({ data: response.data }, () => ctx.helper.serviceAddSystem(16, `用户名 ${username}  注册成功`));
   }
   async updatePass() {
     const { ctx } = this;
@@ -54,12 +57,15 @@ class UserController extends Controller {
 
     if (jwtSecret == ctx.app.config.jwt.secret) {
       const data = await ctx.service.user.updateUserOne({ username, password, secret });
-      ctx.helper.response(data);
+      ctx.helper.response(data, () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码成功`));
     } else
-      ctx.helper.response({
-        success: false,
-        message: '修改失败',
-      });
+      ctx.helper.response(
+        {
+          success: false,
+          message: '修改失败',
+        },
+        () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码失败`)
+      );
   }
   async login() {
     const { ctx } = this;
@@ -89,11 +95,14 @@ class UserController extends Controller {
       password: crypto.createHash('md5').update(passwordDecrypt).digest('hex'),
     });
 
-    if (equalNull) ctx.helper.throw('请检查用户名或者密码');
+    equalNull && ctx.helper.throw('请检查用户名或者密码', () => ctx.helper.serviceAddSystem(14, `用户名 ${usernameDecrypt} 登陆失败`));
 
-    data.dataValues.token = ctx.helper.jwtSecret(`${data.id}|${ctx.helper.decrypt(fingerprint, 2)}`);
+    const json = data.toJSON?.() ?? {};
 
-    ctx.helper.response({ data });
+    json.fingerprint = ctx.helper.decrypt(fingerprint, 2);
+    json.token = ctx.helper.jwtSecret(JSON.stringify(json));
+
+    ctx.helper.response({ data: json }, () => ctx.helper.serviceAddSystem(14, `用户名 ${usernameDecrypt} 登陆成功`));
   }
   async captcha() {
     const { ctx } = this;

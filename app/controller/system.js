@@ -9,10 +9,14 @@ class SystemController extends Controller {
     const { ctx } = this;
     ctx.validate(
       {
+        type: { type: 'number', required: false },
+        ip: { type: 'string', required: false },
         page: { type: 'number', required: false },
         pageSize: { type: 'number', required: false },
         startTime: { type: 'date', trim: true, required: false },
         endTime: { type: 'date', trim: true, required: false },
+        sortProp: { type: 'string', required: false },
+        sortOrder: { type: 'string', required: false },
       },
       ctx.request.query
     );

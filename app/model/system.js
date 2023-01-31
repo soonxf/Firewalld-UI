@@ -3,22 +3,9 @@
 'use strict';
 
 //开机 1,关闭 2,开机加入黑名单 3  新建项目 4,加入黑名单 5,移除 黑名单 6,删除 日志 7,增加规则 8
-const types = new Map([
-  [0, '启动超时'],
-  [1, '启动环境'],
-  [2, '关闭环境'],
-  [3, '开机黑名单'],
-  [4, '加入黑名单'],
-  [5, '移除黑名单'],
-  [6, '新建项目'],
-  [7, '删除项目'],
-  [8, '删除日志'],
-  [9, '新建规则'],
-  [10, '删除规则'],
-  [11, '查询开机时间'],
-  [12, '防火墙状态'],
-  [13, '数据库事务结果'],
-]);
+const path = require('path');
+const { systemTypes } = require(path.join(__dirname, '../extend/variable.js'));
+const types = new Map(systemTypes);
 
 module.exports = app => {
   const { DataTypes } = app.Sequelize;
@@ -29,6 +16,14 @@ module.exports = app => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+      },
+      ip: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      user: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       time: {
         type: DataTypes.STRING,

@@ -11,6 +11,7 @@ module.exports = app => {
 
   router.get('/captcha', controller.user.captcha);
   router.get('/getPublicKeyFingerprint', controller.user.getPublicKeyFingerprint);
+  router.get('/getOperationTypes', controller.operation.getOperationTypes);
   router.post('/updatePass', controller.user.updatePass);
   router.post('/register', controller.user.register);
   router.post('/login', controller.user.login);

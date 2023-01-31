@@ -129,10 +129,7 @@ module.exports = appInfo => {
       duration: ratelimit.duration * 60 * 1000,
       max: ratelimit.max,
       errorMessage: '访问限制,请稍后再试!',
-      id: ctx => {
-        const xwf = ctx.request.header?.['x-forwarded-for'];
-        return xwf ? ctx.app.ipMatch(xwf).join('') : ctx.ip;
-      },
+      id: ctx => ctx.helper.getXwf(),
       headers: {
         remaining: 'Rate-Limit-Remaining',
         reset: 'Rate-Limit-Reset',

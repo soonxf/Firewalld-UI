@@ -3,36 +3,44 @@
 const Service = require('egg').Service;
 
 class SystemService extends Service {
-  async addSystem(type, details) {
+  async addSystem({ type = '', details = '', ip = '', user = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       await ctx.model.System.sync();
-      // await ctx.model.Ip.sync();
-      // await ctx.model.Ip.create({ ip: params.ip, site: params.site });
       await ctx.model.System.create({
+        ip,
+        user,
         type,
         details,
         time: new Date().Format('yyyy-MM-dd hh:mm:ss'),
       });
     });
   }
-  async getSystem({ page = 1, pageSize = 10, startTime, endTime }) {
+  async getSystem({ page = 1, pageSize = 10, startTime, endTime, ip, type, sortProp = 'id', sortOrder = 'DESC' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.System.findAndCountAll({
         where: ctx.helper.where(
-          [startTime && endTime],
+          [startTime && endTime, ip, type],
           [
             {
               time: {
                 [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
               },
             },
+            {
+              ip: {
+                [ctx.helper.seq().Op.like]: `%${ip}%`,
+              },
+            },
+            {
+              type,
+            },
           ]
         ),
         offset: (page - 1) * pageSize,
         limit: pageSize,
-        order: [['id', 'DESC']],
+        order: [[sortProp, sortOrder]],
       });
       return ctx.helper.success(data);
     });

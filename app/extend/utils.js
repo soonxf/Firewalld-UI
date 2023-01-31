@@ -50,27 +50,40 @@ module.exports = {
   seq() {
     return this.app.Sequelize;
   },
-  async seqTransaction(callBack) {
+  async seqTransaction(resolve, reject) {
     const { ctx } = this;
     const transaction = await ctx.model.transaction();
     try {
-      const response = await callBack();
+      const response = await resolve();
       await transaction.commit();
       return response;
     } catch (error) {
       const message = `事务执行失败 ${error.toString()}`;
       await transaction.rollback();
-      await ctx.service.system.addSystem(13, message);
+      this.serviceAddSystem(13, message);
       this.app.getLogger('system').info('', message);
+      reject && reject();
       return { data: null };
     }
   },
   status,
   searcher,
-  throw(message) {
+  throw(message, callBack) {
     const err = new Error(message);
     err.name = 'custom';
+    try {
+      callBack && callBack();
+    } catch (error) {
+      console.log('同时发生错误');
+      console.log(error);
+      throw err;
+    }
     throw err;
+  },
+  getXwf() {
+    const { ctx, app } = this;
+    const xwf = ctx.request.header?.['x-forwarded-for'];
+    return xwf ? app.ipMatch(xwf).join('') : ctx.ip ?? '';
   },
   getFormatNowDate(format = 'yyyy-MM-dd hh:mm:ss') {
     return new Date().Format(format);
@@ -125,10 +138,10 @@ module.exports = {
       const blacklist = await ctx.model.Blacklist.create({ ip, expirationTime, site, port, time, expirationTimeFormat });
       await blacklist.save();
       ctx.helper.ipsCachePut(ip, { ip, port, fullSite: site, expirationTime }, expirationTime);
-      await ctx.service.system.addSystem(4, `加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
+      this.serviceAddSystem(4, `加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`);
       return { ip, success: true, message: '加入黑名单成功' };
     } else {
-      await this.ctx.service.system.addSystem(4, `加入黑名单失败,可能已经用其他方式加入防火墙 IP: ${ip} 地点: ${site} 端口: ${port}`);
+      this.serviceAddSystem(4, `加入黑名单失败,可能已经用其他方式加入防火墙 IP: ${ip} 地点: ${site} 端口: ${port}`);
       return { ip, success: false, message: '加入黑名单失败,可能已经用其他方式加入防火墙' };
     }
   },
@@ -259,7 +272,7 @@ module.exports = {
     console.log('');
     this.app.getLogger('system').info('', `------------------${this.app.env} 环境已启动---------------`);
     console.log('');
-    this.ctx.service.system.addSystem(1, `${this.app.env} 环境已启动`);
+    this.serviceAddSystem(1, `${this.app.env} 环境已启动`);
   },
   systemStop() {
     console.log('');
@@ -270,7 +283,22 @@ module.exports = {
     console.log('');
     this.app.getLogger('system').info('', `------------------启动超时---------------`);
     console.log('');
-    this.ctx.service.system.addSystem(0, `${this.app.env} 启动超时`);
+    this.serviceAddSystem(0, `${this.app.env} 启动超时`);
+  },
+  async serviceAddSystem(type, details) {
+    const {
+      ctx,
+      ctx: { header },
+    } = this;
+    try {
+      const ip = this.getXwf();
+      const jwt = header?.token ? ctx.helper.jwtVerify(header.token) : {};
+      const json = jwt?.playload ? JSON.parse(jwt.playload) : {};
+      const user = json.username ?? '系统默认';
+      await ctx.service.system.addSystem({ ip, user, type, details });
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 

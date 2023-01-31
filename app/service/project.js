@@ -15,8 +15,7 @@ class ProjectService extends Service {
         sort: (await ctx.model.Project.max('sort')) + 1,
         time: ctx.helper.getFormatNowDate(),
       });
-      ctx.service.system.addSystem(6, `新建项目,项目名称:${params.name} 项目端口:${params.port}`);
-      return ctx.helper.success(data);
+      return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(6, `新建项目,项目名称:${params.name} 项目端口:${params.port}`));
     });
   }
   async getProject({ page = 1, pageSize = 10 }) {
@@ -75,7 +74,7 @@ class ProjectService extends Service {
         where: { id: ids },
       });
 
-      rows.forEach((item, index) => ctx.service.system.addSystem(7, `删除项目,项目名称:${item.name} 项目端口:${item.port}`));
+      rows.forEach(item => ctx.helper.serviceAddSystem(7, `删除项目,项目名称:${item.name} 项目端口:${item.port}`));
 
       await ctx.model.Project.destroy({
         where: { id: ids },

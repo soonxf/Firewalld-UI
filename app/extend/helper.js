@@ -18,7 +18,7 @@ module.exports = {
     return await queryNodeVersion('node -v');
   },
   //响应前端
-  response(params) {
+  response(params, callBack) {
     let { data, success, message, code } = params ?? { data: null, success: false, message: '失败', code: 200 };
     data && params != undefined ? (success = true) : params?.success ? (success = true) : (success = false);
     if (data === null || data === undefined || data === NaN || data === 0 || data[0] === 0 || data[0] === 1) data = null;
@@ -29,9 +29,11 @@ module.exports = {
       message: success ? '成功' : message ?? '失败',
       data,
     };
+    callBack && callBack();
   },
   //数据库响应查询
-  success(data, exclude) {
+  success(data, callBack) {
+    callBack && callBack();
     return {
       data: data ?? {},
       equalNull: data || !this._.isEmpty(data) ? false : true,
@@ -41,6 +43,13 @@ module.exports = {
     return arr.map(item => {
       return {
         [this.seq().Op.or]: item,
+      };
+    });
+  },
+  whereAnd(arr) {
+    return arr.map(item => {
+      return {
+        [this.seq().Op.and]: item,
       };
     });
   },

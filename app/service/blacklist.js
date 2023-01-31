@@ -34,9 +34,9 @@ class BlacklistService extends Service {
 
       const { data: success } = await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: unblocked == false });
 
-      await ctx.service.system.addSystem(4, systemMessage);
-
-      return ctx.helper.success({ ip, success, message: success ? message : '重新加入或者修改还在屏蔽中的黑名单时间失败' });
+      return ctx.helper.success({ ip, success, message: success ? message : '重新加入或者修改还在屏蔽中的黑名单时间失败' }, () =>
+        ctx.helper.serviceAddSystem(4, systemMessage)
+      );
     });
   }
   async findBlacklistOne({ ip }) {
@@ -147,9 +147,7 @@ class BlacklistService extends Service {
 
         item?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${item.ip}" drop"`));
 
-        await this.ctx.service.system.addSystem(5, item?.unblocked ? `移除已解禁黑名单 IP ${item.ip}` : `移除屏蔽中黑名单 IP ${item.ip}`);
-
-        app.getLogger('drop').info('黑名单', `删除 IP ${item.ip}`);
+        ctx.helper.serviceAddSystem(5, item?.unblocked ? `移除已解禁黑名单 IP ${item.ip}` : `移除屏蔽中黑名单 IP ${item.ip}`);
       }
 
       await ctx.model.Blacklist.destroy({

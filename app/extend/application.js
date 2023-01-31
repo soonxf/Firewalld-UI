@@ -5,7 +5,6 @@ const directory = path.join(__dirname, '../validate');
 module.exports = {
   //查询是否刚开机查询黑名单(开机180秒内启动即算刚开机),
   ipsCache: [],
-  watchPort: [15800, 15700, 5800, 5700, 5566, 7998, 7999, 17017, 5602, 5601, 5600, 13389, 8022, 8007, 8026, 13306, 5001, 5000],
   isStartUp() {
     const { ctx } = this;
     return new Promise(async (resolve, reject) => {
@@ -13,19 +12,19 @@ module.exports = {
         try {
           const { stdout, stderr, err } = await ctx.helper.command(`cat /proc/uptime`);
           if (stderr || err) {
-            await ctx.service.system.addSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
+            ctx.helper.serviceAddSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
             resolve(false);
           } else {
             const time = this.config?.startupTime ?? 300;
             const startTime = stdout.split(/\s{1,}/)?.[0] ?? 1000000;
-            await ctx.service.system.addSystem(11, `查询开机时间成功,开机时间 ${startTime} 秒`);
+            ctx.helper.serviceAddSystem(11, `查询开机时间成功,开机时间 ${startTime} 秒`);
             resolve(startTime < time ? true : false);
           }
         } catch (e) {
           console.log('');
           this.getLogger('system').info('', `------------------查询开机时间失败 err------------------`);
           console.log('');
-          await ctx.service.system.addSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
+          ctx.helper.serviceAddSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
           resolve(false);
         }
       } else {
@@ -57,13 +56,13 @@ module.exports = {
 
       if (reload) {
         this.getLogger('drop').info('重启服务在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
-        ctx.service.system.addSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
+        ctx.helper.serviceAddSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
       } else {
         const { err, stdout, stderr } = await ctx.helper.drop(item.ip, surplus);
         stdout && del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
         stderr && this.getLogger('drop').info('黑名单', `重复加入 ${item.ip} ${stderr}`);
         err && this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`);
-        stdout && del && ctx.service.system.addSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
+        stdout && del && ctx.helper.serviceAddSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
       }
     }
   },
@@ -86,7 +85,7 @@ module.exports = {
       fullSite,
     };
   },
-  ipMatch: str => str.match?.(/(\d{1,3}\.){3}\d{1,3}/g),
+  ipMatch: str => str?.match?.(/(\d{1,3}\.){3}\d{1,3}/g) ?? [],
   parseIp(value) {
     const data = value.split(/\s/);
     const connectionTime = `${data[5]} ${data[6]}`;
@@ -172,8 +171,8 @@ module.exports = {
       data: { success, message },
     } = await ctx.service.blacklist.addBlacklist({ ip, port, expirationTime, site: fullSite, time });
     success
-      ? ctx.service.system.addSystem(4, `加入黑名单成功, IP :${ip} 封禁时间 ${expirationTime} 秒`)
-      : ctx.service.system.addSystem(4, `加入黑名单失败, IP :${ip} ${message}`);
+      ? ctx.helper.serviceAddSystem(4, `加入黑名单成功, IP :${ip} 封禁时间 ${expirationTime} 秒`)
+      : ctx.helper.serviceAddSystem(4, `加入黑名单失败, IP :${ip} ${message}`);
     return true;
   },
   async addRule(item, expirationTime = 259200) {

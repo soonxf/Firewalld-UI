@@ -50,21 +50,27 @@ class OverviewController extends Service {
   }
   async overviewStartFirewall() {
     const { ctx, app } = this;
-    return await ctx.helper.seqTransaction(async () => {
-      const { stdout, stderr, err } = await ctx.helper.command('systemctl start firewalld');
-      await app.startUp(false);
-      const response = stderr && err ? false : stdout == '' ? true : false;
-      await ctx.service.system.addSystem(12, `开启防火墙${response ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`);
-      return ctx.helper.success(response);
-    });
+    return await ctx.helper.seqTransaction(
+      async () => {
+        const { stdout, stderr, err } = await ctx.helper.command('systemctl start firewalld');
+        await app.startUp(false);
+        const response = stderr && err ? false : stdout == '' ? true : false;
+        return ctx.helper.success(response, () =>
+          ctx.helper.serviceAddSystem(12, `开启防火墙${response ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`)
+        );
+      },
+      async () => await ctx.helper.command('systemctl stop firewalld')
+    );
   }
   async overviewStopFirewall() {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const { stdout, stderr, err } = await ctx.helper.command('systemctl stop firewalld');
       const response = stderr && err ? false : stdout == '' ? true : false;
-      await ctx.service.system.addSystem(12, `关闭防火墙${response ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`);
-      return ctx.helper.success(response);
+
+      return ctx.helper.success(response, () =>
+        ctx.helper.serviceAddSystem(12, `关闭防火墙${response ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`)
+      );
     });
   }
 }

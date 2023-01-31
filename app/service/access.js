@@ -92,8 +92,7 @@ class AccessService extends Service {
       const count = await ctx.model.Access.destroy({
         where: { id: ids },
       });
-      await ctx.service.system.addSystem(8, `删除日志 ${count} 条`);
-      return ctx.helper.success('成功');
+      return ctx.helper.success('成功', () => ctx.helper.serviceAddSystem(8, `删除日志 ${count} 条`));
     });
   }
 }

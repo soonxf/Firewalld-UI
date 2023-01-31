@@ -14,8 +14,7 @@ class RuleService extends Service {
         sort: (await ctx.model.Rule.max('sort')) + 1,
         time,
       });
-      await ctx.service.system.addSystem(9, `新建规则 时间${time}`);
-      return ctx.helper.success(data);
+      return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(9, `新建规则 时间${time}`));
     });
   }
   async getRule({ page = 1, pageSize = 10 }) {
@@ -53,7 +52,7 @@ class RuleService extends Service {
       await ctx.model.Rule.destroy({
         where: { id: ids },
       });
-      await ctx.service.system.addSystem(10, `删除规则 ${ids.length} 条`);
+      ctx.helper.serviceAddSystem(10, `删除规则 ${ids.length} 条`);
       return ctx.helper.success('成功');
     });
   }
