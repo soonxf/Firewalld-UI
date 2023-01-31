@@ -57,8 +57,6 @@ module.exports = {
     let query = {};
     where.length == condition.length
       ? where.forEach((item, index) => {
-          console.log(item);
-          console.log('--------------------------');
           item &&
             item === true &&
             (query = {
