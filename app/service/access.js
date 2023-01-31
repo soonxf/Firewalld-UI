@@ -16,7 +16,7 @@ class AccessService extends Service {
           },
         ],
         where: ctx.helper.where(
-          [startTime && endTime, port, ip, site],
+          [startTime != '' && endTime != '', port != '', ip != '', site != ''],
           [
             {
               time: {
@@ -47,12 +47,12 @@ class AccessService extends Service {
       return ctx.helper.success(data);
     });
   }
-  async findAllAccessLog({ ip, startTime, endTime }) {
+  async findAllAccessLog({ ip, startTime = '', endTime = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Access.findAndCountAll({
         where: ctx.helper.where(
-          [startTime && endTime, ip],
+          [startTime != '' && endTime != '', ip != ''],
           [
             {
               time: {

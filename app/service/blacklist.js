@@ -66,11 +66,11 @@ class BlacklistService extends Service {
     page = 1,
     pageSize = 10,
     ip = '',
-    site,
+    site = '',
     port = '',
     startTime = '',
     endTime = '',
-    unblocked,
+    unblocked = '',
     sortProp = 'id',
     sortOrder = 'DESC',
   }) {
@@ -97,7 +97,7 @@ class BlacklistService extends Service {
           },
         ],
         where: ctx.helper.where(
-          [startTime && endTime, port, ip, unblocked != '', site],
+          [startTime != '' && endTime != '', port != '', ip != '', unblocked != '', site != ''],
           [
             {
               time: {

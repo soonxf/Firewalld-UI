@@ -39,11 +39,11 @@ class ProjectService extends Service {
       return ctx.helper.success(data);
     });
   }
-  async updateProject({ id, name, remarks }) {
+  async updateProject({ id = '', name = '', remarks = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const data = await ctx.model.Project.update(ctx.helper.where([name, remarks], [{ name }, { remarks }]), {
-        where: ctx.helper.where([id], [{ id }]),
+      const data = await ctx.model.Project.update(ctx.helper.where([name != '', remarks != ''], [{ name }, { remarks }]), {
+        where: ctx.helper.where([id != ''], [{ id }]),
       });
 
       return ctx.helper.success(data);

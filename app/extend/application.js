@@ -16,6 +16,7 @@ module.exports = {
             resolve(false);
           } else {
             const time = this.config?.startupTime ?? 300;
+            console.log('-------------------------------------------');
             const startTime = stdout.split(/\s{1,}/)?.[0] ?? 1000000;
             ctx.helper.serviceAddSystem(11, `查询开机时间成功,开机时间 ${startTime} 秒`);
             resolve(startTime < time ? true : false);
@@ -43,6 +44,7 @@ module.exports = {
     startUp == false && del && (reload = true);
     //在数据库中查询黑名单,查询到的重新添加到防火墙规则中(因为开机会丢失非永久性的防火墙富规则)
     const { data } = await ctx.service.blacklist.getBlacklist({ page: 1, pageSize: 10000 });
+    data.rows = data?.rows ?? [];
     for await (let item of data?.rows) {
       //0表示永久禁用
       if (item.expirationTime == 0) continue;

@@ -58,6 +58,7 @@ module.exports = {
       await transaction.commit();
       return response;
     } catch (error) {
+      console.log(error);
       const message = `事务执行失败 ${error.toString()}`;
       await transaction.rollback();
       this.serviceAddSystem(13, message);

@@ -67,7 +67,6 @@ class OverviewController extends Service {
     return await ctx.helper.seqTransaction(async () => {
       const { stdout, stderr, err } = await ctx.helper.command('systemctl stop firewalld');
       const response = stderr && err ? false : stdout == '' ? true : false;
-
       return ctx.helper.success(response, () =>
         ctx.helper.serviceAddSystem(12, `关闭防火墙${response ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`)
       );
