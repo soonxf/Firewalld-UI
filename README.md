@@ -118,6 +118,31 @@ grep secret ./config.json | head -n 1
 
 > ssl.key ssl.crt 填入文件名即可,不需要路径,空 (表示空 == "") 表示不启用 https
 
+
+### 问题
+
+##### 脚本下载依赖失败
+
+> 删除根目录 node_modules
+
+> 使用 cnpm 下载
+
+```
+npm install -g cnpm -registry=https://registry.npm.taobao.org
+```
+
+##### 检查是否安装成功
+
+```
+cnpm -v
+```
+
+##### 下载依赖
+
+```
+cnpm install
+```
+
 #### gitee
 
 [Micro-firewall](https://gitee.com/SOONXFGetee/micro-firewall)
