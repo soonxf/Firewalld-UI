@@ -55,16 +55,22 @@ module.exports = {
 
       ctx.helper.ipsCachePut(item.ip, { ip: item.ip, port: item.port, fullSite: item.site, expirationTime: surplus }, surplus);
 
-      if (reload) {
-        this.getLogger('drop').info('重启服务在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
-        ctx.helper.serviceAddSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
-      } else {
-        const { err, stdout, stderr } = await ctx.helper.drop(item.ip, surplus);
-        stdout && del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
-        stderr && this.getLogger('drop').info('黑名单', `重复加入 ${item.ip} ${stderr}`);
-        err && this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`);
-        stdout && del && ctx.helper.serviceAddSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
-      }
+      reload
+        ? ctx.helper
+            .serviceAddSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`)
+            .then(() =>
+              this.getLogger('drop').info('重启服务在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`)
+            )
+        : await ctx.helper.drop(item.ip, surplus).then(({ err, stdout, stderr, success }) => {
+            success
+              ? (() => {
+                  del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
+                  del && ctx.helper.serviceAddSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
+                })()
+              : ctx.helper
+                  .serviceAddSystem(3, `开机检测到黑名单屏蔽失败, IP :${item.ip} 禁止时间:${surplus} 秒`)
+                  .then(() => this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`));
+          });
     }
   },
   parseIpSite(ip) {
@@ -77,28 +83,22 @@ module.exports = {
     const city = region[3] ?? '未知城市';
     const isp = region[4] ?? '未知网络';
     const fullSite = `${country}-${province}-${city}-${isp}`;
-    return {
-      country,
-      province,
-      city,
-      cityNo,
-      isp,
-      fullSite,
-    };
+
+    return { country, province, city, cityNo, isp, fullSite };
   },
   ipMatch: str => str?.match?.(/(\d{1,3}\.){3}\d{1,3}/g) ?? [],
   parseIp(value) {
     const data = value.split(/\s/);
     const connectionTime = `${data[5]} ${data[6]}`;
     const ip = this.ipMatch(data?.[3] ?? '')?.[0];
-    return {
-      type: data[0] ?? '连接类型未知',
-      localIp: data[1] ?? '本地IP未知',
-      localPort: data[2] ? parseInt(data[2]) : '本地端口未知',
-      remoteIp: ip ?? '远程IP未知',
-      remotePort: data[4] ?? '远程端口未知',
-      connectionTime: new Date(connectionTime).toString() != 'Invalid Date' ? connectionTime : new Date().Format('yyyy-MM-dd hh:mm:ss'),
-    };
+    const type = data[0] ?? '连接类型未知';
+    const localIp = data[1] ?? '本地IP未知';
+    const localPort = data[2] ? parseInt(data[2]) : '本地端口未知';
+    const remoteIp = ip ?? '远程IP未知';
+    const remotePort = data[4] ?? '远程端口未知';
+    const connectionTimeTo = new Date(connectionTime).toString() != 'Invalid Date' ? connectionTime : new Date().Format('yyyy-MM-dd hh:mm:ss');
+
+    return { type, localIp, localPort, remoteIp, remotePort, connectionTime: connectionTimeTo };
   },
   async addIpsCache(item) {
     const { ctx } = this;
@@ -143,23 +143,19 @@ module.exports = {
       connectionTime: new Date(connectionTime).toString() != 'Invalid Date' ? connectionTime : ctx.helper.getFormatNowDate(),
     };
   },
-  isIpSkip(ip, site) {
-    return this.ipInSegment(ip) || site.country.indexOf('保留') != -1 || site == null ? true : false;
-  },
   ipInSegment(ip, believeAccess) {
     if (believeAccess.length == 1 && believeAccess[0] == '全部') return true;
     try {
       const iParse = ip.split('.').map(item => parseInt(item));
-      const ipIn = believeAccess.some(item => {
-        return (
+      const ipIn = believeAccess.some(
+        item =>
           /\-|\//g.test(item) &&
           item.split('.').every((item, index) => {
             const ipSegment = item.split(/\-|\//).map(item => parseInt(item));
             const ipIn = ipSegment.length == 1 ? ipSegment[0] == iParse[index] : ipSegment[0] <= iParse[index] && iParse[index] <= ipSegment[1];
             return ipIn;
           })
-        );
-      });
+      );
       return ipIn;
     } catch (error) {
       return true;

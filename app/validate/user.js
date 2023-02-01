@@ -12,4 +12,9 @@ module.exports = app => {
     const pass = !/^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/.test(value);
     if (pass) return '最少6位,包括至少1个大写字母,1个小写字母,1个数字,!@#$%^&*?其中一个';
   });
+
+  validator.addRule('getbool', (rule, value) => {
+    const pass = value == '' || value == 0 || value == '0' || value == null || value == 'null' ? false : true;
+    return pass;
+  });
 };

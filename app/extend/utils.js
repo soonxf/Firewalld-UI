@@ -177,6 +177,20 @@ module.exports = {
       });
     });
   },
+  async commandQueryportStatus(ports) {
+    if (Array.isArray(ports)) {
+      const portsStatus = [];
+      for await (let item of ports) {
+        const { success, stdout } = await this.command(`firewall-cmd --query-port=${item}/tcp`);
+        success && stdout.indexOf('yes') != -1 && portsStatus.push(item);
+      }
+      return portsStatus;
+    } else return [];
+  },
+  async commandQueryIpRule(ip) {
+    const { success, stdout } = await this.command(`firewall-cmd --list-rich-rules | grep '"${ip}"' | grep drop`);
+    return success ? (stdout == '' ? false : true) : false;
+  },
   async isCustomDrop() {
     const { err, stdout, stderr } = await this.command('firewall-cmd --permanent --get-ipsets');
     const isDrop = stdout.indexOf('CUSTOM-DROP') != -1;
@@ -286,7 +300,7 @@ module.exports = {
     console.log('');
     this.serviceAddSystem(0, `${this.app.env} 启动超时`);
   },
-  async serviceAddSystem(type, details) {
+  async serviceAddSystem(type, details, callBack) {
     const {
       ctx,
       ctx: { header },
@@ -297,6 +311,7 @@ module.exports = {
       const json = jwt?.playload ? JSON.parse(jwt.playload) : {};
       const user = json.username ?? '系统默认';
       await ctx.service.system.addSystem({ ip, user, type, details });
+      callBack && callBack();
     } catch (error) {
       console.log(error);
     }

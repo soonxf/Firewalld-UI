@@ -18,7 +18,7 @@ class ProjectService extends Service {
       return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(6, `新建项目,项目名称:${params.name} 项目端口:${params.port}`));
     });
   }
-  async getProject({ page = 1, pageSize = 10 }) {
+  async getProject({ page = 1, pageSize = 10, portStatus = false }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Project.findAndCountAll({
@@ -36,6 +36,16 @@ class ProjectService extends Service {
         // group: ['Project.port'],
         order: [['sort', 'DESC']],
       });
+
+      portStatus &&
+        (await ctx.helper
+          .commandQueryportStatus(data.rows.map(item => item.port))
+          .then(portsStatus =>
+            data?.rows.forEach((item, index) =>
+              portsStatus.includes(item.getDataValue('port')) ? item.setDataValue('portStaus', true) : item.setDataValue('portStaus', false)
+            )
+          ));
+
       return ctx.helper.success(data);
     });
   }

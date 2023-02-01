@@ -1,5 +1,7 @@
 /** @format */
 
+const { raw } = require('express');
+
 const Service = require('egg').Service;
 
 class BlacklistService extends Service {
@@ -19,7 +21,7 @@ class BlacklistService extends Service {
     return await ctx.helper.seqTransaction(async () => {
       const expirationTimeFormat = ctx.helper.getFormatDate(new Date(time).getTime() + expirationTime * 1000);
 
-      const response = await ctx.service.blacklist.findBlacklistOne({ ip });
+      const response = await ctx.service.blacklist.findBlacklistOne({ ip }, true);
 
       if (response.equalNull)
         return ctx.helper.success(await ctx.helper.blacklistCreate({ ip, expirationTime, site, port, time, expirationTimeFormat }));
@@ -39,11 +41,14 @@ class BlacklistService extends Service {
       );
     });
   }
-  async findBlacklistOne({ ip }) {
+  async findBlacklistOne({ ip }, raw = false) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const response = await ctx.model.Blacklist.findOne({ where: { ip } });
-      return ctx.helper.success(response);
+      if (raw) return ctx.helper.success(response);
+      const firewallStatus = await ctx.helper.commandQueryIpRule(ip);
+      response?.setDataValue?.('firewallStatus', firewallStatus);
+      return ctx.helper.success(response == null ? { firewallStatus } : response);
     });
   }
   // unblocked true 是超过屏蔽时间 false 是正在屏蔽

@@ -26,6 +26,7 @@ class ProjectController extends Controller {
       {
         page: { type: 'number', required: false },
         pageSize: { type: 'number', required: false },
+        portStatus: { type: 'boolean', required: false },
       },
       ctx.request.query
     );
