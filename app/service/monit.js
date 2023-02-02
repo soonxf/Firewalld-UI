@@ -6,28 +6,37 @@ const Service = require('egg').Service;
 const path = require('path');
 const CN = require(path.join(__dirname, '../../CN.json'));
 class MonitController extends Service {
-  async getMonitData() {
+  async getMonitData({ startTime = '', endTime = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const properties = CN.features.map(item => {
-        return {
-          site: item.properties.name.replace(/[\\市,\\省,\\特别行政区\\回族自治区]/, ''),
-          name: item.properties.name,
-        };
-      });
+      const properties = CN.features.map(item => ({
+        site: item.properties.name?.replace?.(/[\"市",\"省",\"特别行政区",\"自治区",\"回族",\"壮族",\"维吾尔"]/g, ''),
+        name: item.properties.name,
+      }));
       const response = [];
       for await (let item of properties) {
+        if (item.name == '') continue;
         const count = await ctx.model.Access.count({
-          where: {
-            site: { [ctx.helper.seq().Op.like]: `%${item.site}%` },
-          },
-          order: [['id', 'DESC']],
+          where: ctx.helper.where(
+            [true, startTime != '' && endTime != ''],
+            [
+              {
+                site: {
+                  [ctx.helper.seq().Op.like]: `%${item.site}%`,
+                },
+              },
+              {
+                time: {
+                  [ctx.helper.seq().Op.between]: [startTime, endTime],
+                },
+              },
+            ]
+          ),
         });
-        item.name != '' &&
-          response.push({
-            name: item.name,
-            value: count,
-          });
+        response.push({
+          name: item.name,
+          value: count,
+        });
       }
       return ctx.helper.success({ data: response, CN });
     });

@@ -15,7 +15,6 @@ class AccessController extends Controller {
         port: { type: 'number', required: false },
         startTime: { type: 'date', trim: true, required: false },
         endTime: { type: 'date', trim: true, required: false },
-        endTime: { type: 'date', trim: true, required: false },
         sortProp: { type: 'string', required: false },
         sortOrder: { type: 'string', required: false },
       },
