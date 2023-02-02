@@ -32,6 +32,7 @@ module.exports = app => {
   router.get('/getSystem', jwt, controller.system.getSystem);
   router.post('/deleteSystem', jwt, controller.system.deleteSystem);
   router.get('/getOverview', jwt, controller.overview.getOverview);
+  router.get('/getMonitData', jwt, controller.monit.getMonitData);
   router.post('/overviewStartFirewall', jwt, controller.overview.overviewStartFirewall);
   router.post('/overviewStopFirewall', jwt, controller.overview.overviewStopFirewall);
   router.get('/getSettings', jwt, controller.settings.getSettings);
