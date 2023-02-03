@@ -27,7 +27,7 @@ class MonitController extends Service {
               },
               {
                 time: {
-                  [ctx.helper.seq().Op.between]: [startTime, endTime],
+                  [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
                 },
               },
             ]
