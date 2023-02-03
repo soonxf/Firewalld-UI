@@ -5,15 +5,11 @@ const { raw } = require('express');
 const Service = require('egg').Service;
 
 class BlacklistService extends Service {
-  async addMultipleBlacklists(body) {
+  async addMultipleBlacklists(body = []) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const success = [];
-      for await (let item of body) {
-        const { data } = await ctx.service.blacklist.addBlacklist(item);
-        success.push(data);
-      }
-      return ctx.helper.success(success);
+      const success = await body.syncMap(async item => await ctx.service.blacklist.addBlacklist(item));
+      return ctx.helper.success(success.map(item => item.data));
     });
   }
   async addBlacklist({ ip = '', time = '', expirationTime = '', site = '', port = '' }) {
@@ -147,19 +143,19 @@ class BlacklistService extends Service {
         },
       });
 
-      for await (let item of rows) {
+      await rows?.syncEach(async () => {
         ctx.helper.ipsCacheDel(item.ip);
 
         item?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${item.ip}" drop"`));
 
         ctx.helper.serviceAddSystem(5, item?.unblocked ? `移除已解禁黑名单 IP ${item.ip}` : `移除屏蔽中黑名单 IP ${item.ip}`);
-      }
+      });
 
-      await ctx.model.Blacklist.destroy({
+      const response = await ctx.model.Blacklist.destroy({
         where: { id: ids },
       });
 
-      return ctx.helper.success('成功');
+      return ctx.helper.success(response);
     });
   }
 }

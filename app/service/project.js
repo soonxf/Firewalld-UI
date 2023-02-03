@@ -62,18 +62,19 @@ class ProjectService extends Service {
   async updateSortProject({ sorts }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let item of sorts) {
-        await ctx.model.Project.update(
-          {
-            sort: item.sort,
-          },
-          {
-            where: {
-              id: item.id,
+      await sorts.forEach(
+        async item =>
+          await ctx.model.Project.update(
+            {
+              sort: item.sort,
             },
-          }
-        );
-      }
+            {
+              where: {
+                id: item.id,
+              },
+            }
+          )
+      );
       return ctx.helper.success('成功');
     });
   }

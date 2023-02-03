@@ -13,31 +13,30 @@ class MonitController extends Service {
         site: item.properties.name?.replace?.(/[\"市",\"省",\"特别行政区",\"自治区",\"回族",\"壮族",\"维吾尔"]/g, ''),
         name: item.properties.name,
       }));
-      const response = [];
-      for await (let item of properties) {
-        if (item.name == '') continue;
-        const count = await ctx.model.Access.count({
-          where: ctx.helper.where(
-            [true, startTime != '' && endTime != ''],
-            [
-              {
-                site: {
-                  [ctx.helper.seq().Op.like]: `%${item.site}%`,
+
+      const response = await properties
+        .filter(item => item.name != '')
+        .syncMap(async item => {
+          const count = await ctx.model.Access.count({
+            where: ctx.helper.where(
+              [true, startTime != '' && endTime != ''],
+              [
+                {
+                  site: {
+                    [ctx.helper.seq().Op.like]: `%${item.site}%`,
+                  },
                 },
-              },
-              {
-                time: {
-                  [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
+                {
+                  time: {
+                    [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
+                  },
                 },
-              },
-            ]
-          ),
+              ]
+            ),
+          });
+          return { name: item.name, value: count };
         });
-        response.push({
-          name: item.name,
-          value: count,
-        });
-      }
+
       return ctx.helper.success({ data: response, CN });
     });
   }

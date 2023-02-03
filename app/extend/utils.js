@@ -50,7 +50,7 @@ module.exports = {
   seq() {
     return this.app.Sequelize;
   },
-  async seqTransaction(resolve, reject) {
+  async seqTransaction(resolve = async () => {}, reject = async () => {}) {
     const { ctx } = this;
     const transaction = await ctx.model.transaction();
     try {
@@ -316,6 +316,41 @@ module.exports = {
       console.log(error);
     }
   },
+};
+
+Array.prototype.syncEach = async function (callBack = async () => {}) {
+  try {
+    const data = Array.isArray(this) ? this : [];
+    for await (let item of data) {
+      const res = await callBack(item);
+      if (res !== undefined) {
+        if (res === true) {
+          break;
+        } else {
+          continue;
+        }
+      }
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+Array.prototype.syncMap = async function (callBack = async () => {}) {
+  try {
+    const data = Array.isArray(this) ? this : [];
+    const response = [];
+    for await (let item of data) {
+      const res = await callBack(item);
+      response.push(res);
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 };
 
 Date.prototype.Format = function (fmt) {

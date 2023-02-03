@@ -76,18 +76,17 @@ class AccessService extends Service {
     await ctx.model.Access.sync();
     // await ctx.model.Ip.sync();
     // await ctx.model.Ip.create({ ip: params.ip, site: params.site });
-    const log = await ctx.model.Access.create({
+    await ctx.model.Access.create({
       ...params,
+      num: await ctx.model.Access.count({
+        where: {
+          ip: params.ip,
+        },
+      }),
     });
-    log.num = await ctx.model.Access.count({
-      where: {
-        ip: params.ip,
-      },
-    });
-    await log.save();
   }
   async deleteAccessLog({ ids }) {
-    const { ctx, app } = this;
+    const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const count = await ctx.model.Access.destroy({
         where: { id: ids },

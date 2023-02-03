@@ -31,18 +31,19 @@ class RuleService extends Service {
   async updateSortRule({ sorts }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      for await (let item of sorts) {
-        await ctx.model.Rule.update(
-          {
-            sort: item.sort,
-          },
-          {
-            where: {
-              id: item.id,
+      await sorts.syncEach(
+        async item =>
+          await ctx.model.Rule.update(
+            {
+              sort: item.sort,
             },
-          }
-        );
-      }
+            {
+              where: {
+                id: item.id,
+              },
+            }
+          )
+      );
       return ctx.helper.success('成功');
     });
   }

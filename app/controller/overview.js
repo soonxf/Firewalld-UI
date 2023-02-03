@@ -7,7 +7,15 @@ const { Controller } = require('egg');
 class OverviewController extends Controller {
   async getOverview() {
     const { ctx } = this;
-    const { data } = await ctx.service.overview.getOverview();
+    ctx.validate(
+      {
+        endTime: { type: 'date', trim: true, required: false },
+        endTime: { type: 'date', trim: true, required: false },
+      },
+      ctx.request.query
+    );
+    const query = ctx.request.query;
+    const { data } = await ctx.service.overview.getOverview(query);
     ctx.helper.response({ data });
   }
   async overviewStartFirewall() {

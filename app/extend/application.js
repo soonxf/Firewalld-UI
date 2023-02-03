@@ -44,12 +44,12 @@ module.exports = {
     //在数据库中查询黑名单,查询到的重新添加到防火墙规则中(因为开机会丢失非永久性的防火墙富规则)
     const { data } = await ctx.service.blacklist.getBlacklist({ page: 1, pageSize: 10000 });
     data.rows = data?.rows ?? [];
-    for await (let item of data?.rows) {
+    data?.rows.syncEach?.(async item => {
       //0表示永久禁用
-      if (item.expirationTime == 0) continue;
+      if (item.expirationTime == 0) return;
 
       //小于0表示已经解封
-      if (item.unblocked) continue;
+      if (item.unblocked) return;
 
       let surplus = parseInt((item.expirationTime * 1000 - (new Date().getTime() - new Date(item.time).getTime()) / 1000) / 1000);
 
@@ -71,7 +71,7 @@ module.exports = {
                   .serviceAddSystem(3, `开机检测到黑名单屏蔽失败, IP :${item.ip} 禁止时间:${surplus} 秒`)
                   .then(() => this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`));
           });
-    }
+    });
   },
   parseIpSite(ip) {
     const { ctx } = this;
@@ -179,18 +179,15 @@ module.exports = {
     const believeAccess = this.config?.believe?.access ?? [];
     if (this.ipInSegment(ip, believeAccess)) return;
 
-    const { data, equalNull } = await ctx.service.rule.getRule({
+    const { data } = await ctx.service.rule.getRule({
       page: 1,
       pageSize: 10000,
     });
 
-    if (equalNull) return;
-
-    for await (let rowItem of data.rows) {
+    data?.rows?.syncEach(async item => {
       const ports = rowItem.ports.includes(item.port) || rowItem.ports.length == 0;
       const ips = rowItem.ips.includes(item.ip) || rowItem.ips.length == 0;
       const sites = rowItem.sites.some(site => item.fullSite.indexOf(site) != -1) || rowItem.sites.length == 0;
-
       const checkRule = async type => {
         if (type) {
           const sitesDisabled = rowItem.sitesDisabled == false || (rowItem.sitesDisabled && sites);
@@ -221,8 +218,8 @@ module.exports = {
           }
         }
       };
-      if (await checkRule(rowItem.unblocked)) return;
-    }
+      if (await checkRule(rowItem.unblocked)) return true;
+    });
   },
   async checkIpsCache() {
     if (this.ipsCache.length == 0) return;
@@ -236,11 +233,11 @@ module.exports = {
     this.loader.loadToApp(directory, 'validate');
     await this.startUp();
     this.ctx.helper.systemStart();
-    this.messenger.on('netstat', data =>
-      this.ctx.runInBackground(async () => {
-        for await (let item of data) await this.addIpsCache(item);
-      })
-    );
+    this.ctx.runInBackground(() => {
+      this.messenger.on('netstat', async data => {
+        await data?.rows?.syncEach(async () => await this.addIpsCache(item));
+      });
+    });
   },
   beforeClose() {
     this.ctx = this.createAnonymousContext();
