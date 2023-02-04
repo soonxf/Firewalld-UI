@@ -125,10 +125,24 @@ module.exports = {
     return ipsCache.get(`ip-${ip}`) != null;
   },
   ipsCachePut(ip, data, expirationTime) {
-    ipsCache.del(`ip-${ip}`);
-    ipsCache.put(`ip-${ip}`, data, expirationTime * 1000, (key, value) => {
-      //这是缓存失效的回调,不是插入成功的回调
-    });
+    const { ctx } = this;
+    try {
+      ipsCache.del(`ip-${ip}`);
+      //解决定时器溢出问题
+      const time = 100000;
+      if (expirationTime > time) {
+        data.expirationTimeSplit = expirationTime - time;
+        ipsCache.put(`ip-${ip}`, data, time * 1000, (key, value) => {
+          ctx.helper.ipsCachePut(value.ip, value, data.expirationTimeSplit);
+        });
+      } else {
+        ipsCache.put(`ip-${ip}`, data, expirationTime * 1000, (key, value) => {
+          //这是缓存失效的回调,不是插入成功的回调
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
   ipsCacheDel(ip) {
     return ipsCache.del(`ip-${ip}`);
