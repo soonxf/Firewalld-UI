@@ -12,6 +12,14 @@
 
 ## [点击查看演示](https://340200.xyz:65001)
 
+### 联系我
+
+> 备注问题
+
+```email
+soonxf@dingtalk.com
+```
+
 ### Micro-Firewall
 
 Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创建屏蔽规则,根据规则自动屏蔽 IP
@@ -143,12 +151,6 @@ cnpm -v
 
 ```
 cnpm install
-```
-
-##### 联系我
-
-```email
-soonxf@dingtalk.com
 ```
 
 #### gitee
