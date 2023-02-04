@@ -1,7 +1,4 @@
 /** @format */
-
-const { raw } = require('express');
-
 const Service = require('egg').Service;
 
 class BlacklistService extends Service {
@@ -15,6 +12,8 @@ class BlacklistService extends Service {
   async addBlacklist({ ip = '', time = '', expirationTime = '', site = '', port = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
+      ctx.helper.tcpkill(ip);
+
       const expirationTimeFormat = ctx.helper.getFormatDate(new Date(time).getTime() + expirationTime * 1000);
 
       const response = await ctx.service.blacklist.findBlacklistOne({ ip }, true);
@@ -143,7 +142,7 @@ class BlacklistService extends Service {
         },
       });
 
-      await rows?.syncEach(async () => {
+      await rows?.syncEach(async item => {
         ctx.helper.ipsCacheDel(item.ip);
 
         item?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${item.ip}" drop"`));

@@ -99,6 +99,22 @@ else
 greMsg "firewalld  已安装 版本: $FIRE"
 fi
 
+# 检测是否安装 tcpkill
+which dsniff >/dev/null
+if [ $? -ne 0 ]; then
+    redMsg "建议安装 dsniff (不影响使用)"
+else
+greMsg "tcpkill  已安装"
+fi
+
+FIRE=$(firewall-cmd -V)
+if [ $? -ne 0 ]; then
+redMsg "请先安装 firewalld 防火墙 再试"
+exit 1
+else
+greMsg "firewalld  已安装 版本: $FIRE"
+fi
+
 # 检查通过
 
 cd $DIR

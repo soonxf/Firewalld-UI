@@ -7,6 +7,7 @@ const path = require('path');
 
 // const seq = require('sequelize');
 // const Op = seq.Op;
+let isTcpkill = false;
 
 const status = require(path.join(__dirname, './status'));
 
@@ -177,6 +178,33 @@ module.exports = {
       });
     });
   },
+  tcpkill(ip, timeout = 300000) {
+    return new Promise((resolve, reject) => {
+      if (isTcpkill) return resolve(true);
+      console.log('kaishizhixing');
+      let timer;
+      try {
+        const response = exec(`tcpkill -i any -9 host ${ip}`, { timeout: timeout * 2, maxBuffer: 50 * 1024 });
+        response.on('close', code => resolve(true));
+        response.on('error', code => {
+          isTcpkill = true;
+          resolve(true);
+        });
+        response.on('exit', code => {
+          code != null && (isTcpkill = true);
+          resolve(true);
+        });
+        timer = setTimeout(() => {
+          response?.kill();
+          resolve(true);
+          clearTimeout(timer);
+        }, timeout);
+      } catch (error) {
+        timer && clearTimeout(timer);
+        reject(false);
+      }
+    });
+  },
   async commandQueryportStatus(ports) {
     if (Array.isArray(ports)) {
       const portsStatus = [];
@@ -331,7 +359,6 @@ Array.prototype.syncEach = async function (callBack = async () => {}) {
         }
       }
     }
-    return response;
   } catch (error) {
     console.log(error);
     return [];

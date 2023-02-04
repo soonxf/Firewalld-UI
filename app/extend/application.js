@@ -184,7 +184,7 @@ module.exports = {
       pageSize: 10000,
     });
 
-    data?.rows?.syncEach(async item => {
+    data?.rows?.syncEach(async rowItem => {
       const ports = rowItem.ports.includes(item.port) || rowItem.ports.length == 0;
       const ips = rowItem.ips.includes(item.ip) || rowItem.ips.length == 0;
       const sites = rowItem.sites.some(site => item.fullSite.indexOf(site) != -1) || rowItem.sites.length == 0;
@@ -235,7 +235,7 @@ module.exports = {
     this.ctx.helper.systemStart();
     this.ctx.runInBackground(() => {
       this.messenger.on('netstat', async data => {
-        await data?.rows?.syncEach(async () => await this.addIpsCache(item));
+        await data?.syncEach(async item => await this.addIpsCache(item));
       });
     });
   },
