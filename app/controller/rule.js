@@ -22,9 +22,20 @@ class RuleController extends Controller {
       unblocked: { type: 'boolean', required: true },
       limitDisabled: { type: 'boolean', trim: true, required: true },
       abroadDisabled: { type: 'boolean', required: true },
+      effective: { type: 'boolean', required: true },
     });
     const body = ctx.request.body;
     const { data } = await ctx.service.rule.addRule(body);
+    ctx.helper.response({ data });
+  }
+  async updateRuleEffective() {
+    const { ctx } = this;
+    ctx.validate({
+      id: { type: 'number', trim: true, required: true },
+      effective: { type: 'boolean', required: true },
+    });
+    const body = ctx.request.body;
+    const { data } = await ctx.service.rule.updateRuleEffective(body);
     ctx.helper.response({ data });
   }
   async updateSortRule() {

@@ -180,6 +180,7 @@ module.exports = {
     if (this.ipInSegment(ip, believeAccess)) return;
 
     const { data } = await ctx.service.rule.getRule({
+      effective: true,
       page: 1,
       pageSize: 10000,
     });
@@ -233,7 +234,7 @@ module.exports = {
     this.loader.loadToApp(directory, 'validate');
     await this.startUp();
     this.ctx.helper.systemStart();
-    this.ctx.runInBackground(() => {
+    this.ctx.runInBackground(async () => {
       this.messenger.on('netstat', async data => {
         await data?.syncEach(async item => await this.addIpsCache(item));
       });

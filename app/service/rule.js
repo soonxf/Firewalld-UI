@@ -4,11 +4,11 @@ const Service = require('egg').Service;
 
 class RuleService extends Service {
   async addRule(body) {
-    const { ctx, app } = this;
+    const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       await ctx.model.Rule.sync();
       // await ctx.model.Rule.sync({ force: true });
-      const time = new Date().Format('yyyy-MM-dd hh:mm:ss');
+      const time = ctx.helper.getFormatNowDate();
       const data = await ctx.model.Rule.create({
         ...body,
         sort: (await ctx.model.Rule.max('sort')) + 1,
@@ -17,10 +17,34 @@ class RuleService extends Service {
       return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(9, `新建规则 时间${time}`));
     });
   }
-  async getRule({ page = 1, pageSize = 10 }) {
+  async updateRuleEffective({ effective = '', id = '' }) {
+    const { ctx } = this;
+    return await ctx.helper.seqTransaction(async () => {
+      await ctx.model.Rule.update(
+        {
+          effective,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return ctx.helper.success('成功');
+    });
+  }
+  async getRule({ page = 1, pageSize = 10, effective = '' }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Rule.findAndCountAll({
+        where: ctx.helper.where(
+          [effective != ''],
+          [
+            {
+              effective: effective == 'true' || effective === true,
+            },
+          ]
+        ),
         offset: (page - 1) * pageSize,
         limit: pageSize,
         order: [['sort', 'DESC']],

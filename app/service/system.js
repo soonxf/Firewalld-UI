@@ -12,7 +12,7 @@ class SystemService extends Service {
         user,
         type,
         details,
-        time: new Date().Format('yyyy-MM-dd hh:mm:ss'),
+        time: ctx.helper.getFormatNowDate(),
       });
     });
   }

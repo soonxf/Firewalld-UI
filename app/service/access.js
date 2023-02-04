@@ -78,11 +78,12 @@ class AccessService extends Service {
     // await ctx.model.Ip.create({ ip: params.ip, site: params.site });
     await ctx.model.Access.create({
       ...params,
-      num: await ctx.model.Access.count({
-        where: {
-          ip: params.ip,
-        },
-      }),
+      num:
+        (await ctx.model.Access.count({
+          where: {
+            ip: params.ip,
+          },
+        })) + 1,
     });
   }
   async deleteAccessLog({ ids }) {

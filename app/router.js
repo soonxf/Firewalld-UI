@@ -41,4 +41,5 @@ module.exports = app => {
   router.get('/getRule', jwt, controller.rule.getRule);
   router.post('/updateSortRule', jwt, controller.rule.updateSortRule);
   router.post('/deleteRule', jwt, controller.rule.deleteRule);
+  router.post('/updateRuleEffective', jwt, controller.rule.updateRuleEffective);
 };

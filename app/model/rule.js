@@ -16,6 +16,10 @@ module.exports = app => {
         type: DataTypes.NUMBER,
         allowNull: true,
       },
+      effective: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
       limitShield: {
         type: DataTypes.NUMBER,
         allowNull: true,
