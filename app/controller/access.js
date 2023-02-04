@@ -12,7 +12,7 @@ class AccessController extends Controller {
         page: { type: 'number', required: false },
         pageSize: { type: 'number', required: false },
         ip: { type: 'string', trim: true, required: false },
-        port: { type: 'number', required: false },
+        port: { type: 'string', required: false },
         startTime: { type: 'date', trim: true, required: false },
         endTime: { type: 'date', trim: true, required: false },
         sortProp: { type: 'string', required: false },

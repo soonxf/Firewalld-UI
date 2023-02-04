@@ -38,10 +38,10 @@ class RuleService extends Service {
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Rule.findAndCountAll({
         where: ctx.helper.where(
-          [effective != ''],
+          [ctx.helper.notEmpty(effective)],
           [
             {
-              effective: effective == 'true' || effective === true,
+              effective: ctx.helper.boolFormat(effective),
             },
           ]
         ),

@@ -20,24 +20,21 @@ class SystemService extends Service {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.System.findAndCountAll({
-        where: ctx.helper.where(
-          [startTime != '' && endTime != '', ip != '', type != ''],
-          [
-            {
-              time: {
-                [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
-              },
+        where: ctx.helper.where(ctx.helper.notEmpty([[startTime, endTime], ip, type]), [
+          {
+            time: {
+              [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
             },
-            {
-              ip: {
-                [ctx.helper.seq().Op.like]: `%${ip}%`,
-              },
+          },
+          {
+            ip: {
+              [ctx.helper.seq().Op.like]: `%${ip}%`,
             },
-            {
-              type,
-            },
-          ]
-        ),
+          },
+          {
+            type,
+          },
+        ]),
         offset: (page - 1) * pageSize,
         limit: pageSize,
         order: [[sortProp, sortOrder]],

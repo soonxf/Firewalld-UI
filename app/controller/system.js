@@ -9,7 +9,7 @@ class SystemController extends Controller {
     const { ctx } = this;
     ctx.validate(
       {
-        type: { type: 'number', required: false },
+        type: { type: 'string', required: false },
         ip: { type: 'string', required: false },
         page: { type: 'number', required: false },
         pageSize: { type: 'number', required: false },

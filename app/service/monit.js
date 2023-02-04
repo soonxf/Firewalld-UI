@@ -18,21 +18,18 @@ class MonitController extends Service {
         .filter(item => item.name != '')
         .syncMap(async item => {
           const count = await ctx.model.Access.count({
-            where: ctx.helper.where(
-              [true, startTime != '' && endTime != ''],
-              [
-                {
-                  site: {
-                    [ctx.helper.seq().Op.like]: `%${item.site}%`,
-                  },
+            where: ctx.helper.where(ctx.helper.notEmpty([true, [startTime, endTime]]), [
+              {
+                site: {
+                  [ctx.helper.seq().Op.like]: `%${item.site}%`,
                 },
-                {
-                  time: {
-                    [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
-                  },
+              },
+              {
+                time: {
+                  [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
                 },
-              ]
-            ),
+              },
+            ]),
           });
           return { name: item.name, value: count };
         });

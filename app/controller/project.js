@@ -40,7 +40,7 @@ class ProjectController extends Controller {
     const { ctx } = this;
 
     ctx.validate({
-      id: { type: 'number', required: true },
+      id: { type: 'string', required: true },
       remarks: { type: 'string', required: false },
       name: { type: 'string', required: false },
     });

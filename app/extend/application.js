@@ -180,7 +180,7 @@ module.exports = {
     if (this.ipInSegment(ip, believeAccess)) return;
 
     const { data } = await ctx.service.rule.getRule({
-      effective: true,
+      effective: 1,
       page: 1,
       pageSize: 10000,
     });

@@ -219,6 +219,14 @@ module.exports = {
       }
     });
   },
+  boolFormat(num) {
+    const bool =
+      num === 1 || num === '1' || num === true || num === 'true' ? true : num === 0 || num === '0' || num === false || num === 'false' ? false : '';
+    return bool;
+  },
+  notEmpty(params) {
+    return Array.isArray(params) ? params.map(item => (Array.isArray(item) ? item.every(item => item !== '') : item !== '')) : params !== '';
+  },
   async commandQueryportStatus(ports) {
     if (Array.isArray(ports)) {
       const portsStatus = [];

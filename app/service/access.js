@@ -15,31 +15,28 @@ class AccessService extends Service {
             as: 'project',
           },
         ],
-        where: ctx.helper.where(
-          [startTime != '' && endTime != '', port != '', ip != '', site != ''],
-          [
-            {
-              time: {
-                [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
-              },
+        where: ctx.helper.where(ctx.helper.notEmpty([[startTime, endTime], port, ip, site]), [
+          {
+            time: {
+              [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
             },
-            { port },
-            {
-              ip: {
-                [ctx.helper.seq().Op.like]: `%${ip}%`,
-              },
+          },
+          { port },
+          {
+            ip: {
+              [ctx.helper.seq().Op.like]: `%${ip}%`,
             },
-            {
-              [ctx.helper.seq().Op.and]: site.split('').map(item => {
-                return {
-                  site: {
-                    [ctx.helper.seq().Op.like]: `%${item}%`,
-                  },
-                };
-              }),
-            },
-          ]
-        ),
+          },
+          {
+            [ctx.helper.seq().Op.and]: site.split('').map(item => {
+              return {
+                site: {
+                  [ctx.helper.seq().Op.like]: `%${item}%`,
+                },
+              };
+            }),
+          },
+        ]),
         offset: (page - 1) * pageSize,
         limit: pageSize,
         order: [[sortProp, sortOrder]],
@@ -52,7 +49,7 @@ class AccessService extends Service {
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Access.findAndCountAll({
         where: ctx.helper.where(
-          [startTime != '' && endTime != '', ip != ''],
+          [ctx.helper.notEmpty([[startTime, endTime], ip])],
           [
             {
               time: {

@@ -7,6 +7,12 @@ const { Controller } = require('egg');
 class RuleController extends Controller {
   async getRule() {
     const { ctx } = this;
+    ctx.validate(
+      {
+        effective: { type: 'string', required: false },
+      },
+      ctx.request.query
+    );
     const query = ctx.request.query;
     const { data } = await ctx.service.rule.getRule(query);
     ctx.helper.response({ data });
@@ -32,7 +38,7 @@ class RuleController extends Controller {
     const { ctx } = this;
     ctx.validate({
       id: { type: 'number', trim: true, required: true },
-      effective: { type: 'boolean', required: true },
+      effective: { type: 'string', required: true },
     });
     const body = ctx.request.body;
     const { data } = await ctx.service.rule.updateRuleEffective(body);

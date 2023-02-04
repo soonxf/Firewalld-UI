@@ -9,16 +9,17 @@ class BlacklistController extends Controller {
     const { ctx } = this;
     ctx.validate(
       {
-        page: { type: 'number', required: false },
-        pageSize: { type: 'number', required: false },
-        port: { type: 'number', required: false },
+        page: { type: 'string', required: false },
+        pageSize: { type: 'string', required: false },
+        unblocked: { type: 'string', required: false },
+        port: { type: 'string', required: false },
         ip: { type: 'string', trim: true, required: false },
         startTime: { type: 'date', trim: true, required: false },
         endTime: { type: 'date', trim: true, required: false },
         sortProp: { type: 'string', required: false },
         sortOrder: { type: 'string', required: false },
       },
-      ctx.query
+      ctx.request.query
     );
     const query = ctx.request.query;
     const { data } = await ctx.service.blacklist.getBlacklist(query);
