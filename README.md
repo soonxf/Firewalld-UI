@@ -155,7 +155,7 @@ cnpm install
 
 #### gitee
 
-[Micro-firewall](https://gitee.com/SOONXFGetee/micro-firewall)
+[Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
 
 #### 完整启动流程截图
 
