@@ -55,17 +55,10 @@ class UserController extends Controller {
 
     ctx.helper.captchaCheck(playload, code);
 
-    if (jwtSecret == ctx.app.config.jwt.secret) {
-      const data = await ctx.service.user.updateUserOne({ username, password, secret });
-      ctx.helper.response(data, () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码成功`));
-    } else
-      ctx.helper.response(
-        {
-          success: false,
-          message: '修改失败',
-        },
-        () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码失败`)
-      );
+    jwtSecret != ctx.app.config.jwt.secret && ctx.helper.throw('修改失败', () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码失败`));
+
+    const data = await ctx.service.user.updateUserOne({ username, password, secret });
+    ctx.helper.response(data, () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码成功`));
   }
   async login() {
     const { ctx } = this;

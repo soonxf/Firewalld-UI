@@ -185,6 +185,17 @@ module.exports = {
     isReturn && console.log('node 版本需要大于等于 16');
     return isReturn;
   },
+  millisecondToDay(millisecond = 86400000) {
+    return parseInt(millisecond / 86400000);
+  },
+  dayToMillisecond(day = 1) {
+    return parseInt(day * 86400000);
+  },
+  async getFirewalldStatus() {
+    const { ctx } = this;
+    const { success, stdout } = await ctx.helper.command('firewall-cmd --state');
+    return success ? (stdout.indexOf('running') == -1 ? false : true) : false;
+  },
   command(command = '') {
     return new Promise((resolve, reject) => {
       exec(command, (err, stdout, stderr) => {
@@ -365,6 +376,27 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  controllerGetOverview(startTime, endTime) {
+    const { ctx } = this;
+    const str =
+      new Date(startTime == '' ? new Date(new Date().Format('yyyy-MM-dd')).getTime() - ctx.helper.dayToMillisecond(15) : `${startTime}`).getTime() -
+      ctx.helper.dayToMillisecond();
+
+    const end = new Date(endTime == '' ? ctx.helper.getFormatNowDate('yyyy-MM-dd') : `${endTime}`).getTime();
+
+    const day = Math.floor((end - str) / (24 * 3600 * 1000));
+
+    const rangeDate = Array.from({ length: day }).map((item, index) => {
+      const date = end - ctx.helper.dayToMillisecond() * index;
+      return {
+        date: ctx.helper.getFormatDate(date, 'yyyy-MM-dd'),
+        startTime: ctx.helper.getFormatDate(date, 'yyyy-MM-dd 00:00:00'),
+        endTime: ctx.helper.getFormatDate(date, 'yyyy-MM-dd 23:59:59'),
+      };
+    });
+
+    return { str, end, day, rangeDate };
   },
 };
 

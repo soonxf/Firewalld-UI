@@ -3,11 +3,9 @@
 const Service = require('egg').Service;
 
 class UserService extends Service {
-  async register(params) {
+  async register({ username, password, secret }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const { username, password, secret } = params;
-
       const { config } = ctx.app.config;
 
       await ctx.model.User.sync({ force: true });
@@ -18,21 +16,19 @@ class UserService extends Service {
       return ctx.helper.success(data);
     });
   }
-  async updateUserOne(params) {
+  async updateUserOne({ username, password, secret }) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const { username, password, secret } = params;
-
       const data = await ctx.model.User.update({ password }, { where: { username, secret } });
 
       return ctx.helper.success(data);
     });
   }
-  async findUserOne(params) {
+  async findUserOne(query) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.User.findOne({
-        where: params,
+        where: query,
         attributes: {
           exclude: ['secret'],
         },
