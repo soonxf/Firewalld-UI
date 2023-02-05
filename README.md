@@ -116,7 +116,7 @@ sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "�
 > 项目根目录打开 linux 终端执行
 
 ```
-grep secret ./config.json | head -n 1
+grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 ```
 
 
