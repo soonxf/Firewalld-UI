@@ -43,9 +43,9 @@ module.exports = {
     startUp == false && del && (reload = true);
     //在数据库中查询黑名单,查询到的重新添加到防火墙规则中(因为开机会丢失非永久性的防火墙富规则)
     const { data } = await ctx.service.blacklist.getBlacklist({ page: 1, pageSize: 10000, unblocked: false });
-    data.rows = data?.rows ?? [];
-    await data?.rows.syncEach?.(async item => {
-      let surplus = parseInt((item.expirationTime * 1000 - (new Date().getTime() - new Date(item.time).getTime()) / 1000) / 1000);
+
+    await data?.rows?.syncEach?.(async item => {
+      let surplus = parseInt(item.expirationTime - (new Date().getTime() - new Date(item.time).getTime()) / 1000);
 
       ctx.helper.ipsCachePut(item.ip, { ip: item.ip, port: item.port, fullSite: item.site, expirationTime: surplus }, surplus);
 
