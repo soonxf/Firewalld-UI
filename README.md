@@ -36,6 +36,7 @@ soonxf@dingtalk.com
 
 * 部署启动极其简单,一键 startup.sh 脚本轻松部署
 * 前端基于 Vue(element UI), 后端 基于 nodejs(eggjs)
+* 修改 element 源码,table 组件增加 defer 延迟加载函数
 * vuex 和 数据持久化, pm2 管理和部署项目, pkg 打包前端静态资源
 * express 部署前端 https 静态资源,使用 limiter 帽子防护 xss 等攻击
 * 使用 jwt 和 浏览器指纹维护前端的登录状态
