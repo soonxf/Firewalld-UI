@@ -200,6 +200,8 @@ cnpm install
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong)
 
 
+> 博客打不开粘贴访问 https://blog.340200.xyz
+
 #### gitee
 
 [Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
