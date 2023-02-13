@@ -166,6 +166,30 @@ cnpm -v
 cnpm install
 ```
 
+##### libstdc++ 问题
+
+> 出现原因:一些高版本的 node 需要 libstdc++ 等一些系统环境的支持
+
+> 解决办法分为两种
+
+* 降低 node 版本
+* 安装 libstdc++
+
+###### 降低 node 版本
+
+> 依照 ./shell/node.sh 脚本的指示修改版本
+
+> 手动安装 node 
+
+[安装node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
+
+###### 安装 libstdc++
+
+> 安装 libstdc++ 有风险,建议备份后再尝试
+
+[安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
+
+
 #### gitee
 
 [Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
