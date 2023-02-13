@@ -1,4 +1,4 @@
-
+(aaa)[http://340200.xyz :8008/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/]
 <div align="center">
 
 #####   开源不易,点个 🌟🌟🌟 吧!!!
