@@ -94,6 +94,8 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 
 ### 登录
 
+> 若没有默认用户,登录页手动注册
+
 默认用户名
 
 ```
