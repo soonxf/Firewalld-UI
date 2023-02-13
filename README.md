@@ -78,7 +78,10 @@ soonxf@dingtalk.com
 ./shell/startup.sh
 ```
 
-或者(没有执行权限情况下)
+或者
+
+
+> 没有执行权限情况下
 
 ```
 chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
