@@ -181,13 +181,13 @@ cnpm install
 
 > 手动安装 node 
 
-[安装node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
+[手动安装node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
 
 ###### 安装 libstdc++
 
 > 安装 libstdc++ 有风险,建议备份后再尝试
 
-[安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
+[手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
 
 
 #### gitee
