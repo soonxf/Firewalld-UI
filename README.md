@@ -171,15 +171,17 @@ cnpm install
 > 出现原因:一些高版本的 node 需要 libstdc++ 等一些系统环境的支持
 
 > 解决办法分为两种
+> 还可以升级系统解决哈哈哈哈哈哈...
 
-* 降低 node 版本
-* 安装 libstdc++
+* 方法一: 降低 node 版本
+* 方法二: 安装 libstdc++
 
 ###### 降低 node 版本
 
-> 依照 ./shell/node.sh 脚本的指示修改版本
+> 降低 node 版本的方法有(版本建议不要低于 14.0.0)
 
-> 手动安装 node 
+* 依照 ./shell/node.sh 脚本的指示修改版本
+* 手动安装 node
 
 [手动安装node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
 
