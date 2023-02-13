@@ -86,6 +86,12 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 
 > 启动完成浏览器打开 本机IP:5000(5001)
 
+### 部署和运行
+
+* clone 项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases)
+* 拷贝解压到 linux 服务器任意目录
+* 项目根目录运行 startup.sh 脚本即部署成功
+
 ### 登录
 
 默认用户名
