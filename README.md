@@ -166,9 +166,7 @@ cnpm -v
 cnpm install
 ```
 
-##### libstdc++ 问题
-
-> 出现原因:一些高版本的 node 需要 libstdc++ 等一些系统环境的支持
+##### libstdc++ 报错
 
 > 解决办法分为两种
 > 还可以升级系统解决哈哈哈哈哈哈...
@@ -190,6 +188,16 @@ cnpm install
 > 安装 libstdc++ 有风险,建议备份后再尝试
 
 [手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
+
+###### 脚本内替换 node 版本
+
+将 ./shell/node.sh 和 ./shell/pm2.sh 中出现 node-v16.18.1-linux-x64 的地方全部替换为手动下载的 node 名字
+
+[下载 node](https://nodejs.org/dist/)
+
+###### 手动安装 pm2
+
+[手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
 
 #### gitee
