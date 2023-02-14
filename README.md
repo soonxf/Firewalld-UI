@@ -159,6 +159,10 @@ npm install -g cnpm -registry=https://registry.npm.taobao.org
 ln -s node目录/bin/cnpm /usr/local/bin/cnpm
 ```
 
+```
+cnpm config set registry https://registry.npm.taobao.org
+```
+
 ##### 检查是否安装成功
 
 ```
@@ -168,7 +172,7 @@ cnpm -v
 ##### 下载依赖
 
 ```
-cnpm install
+cnpm install -registry=https://registry.npm.taobao.org
 ```
 
 ##### libstdc++ 报错
