@@ -153,6 +153,12 @@ grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 npm install -g cnpm -registry=https://registry.npm.taobao.org
 ```
 
+> 如果是 startup.sh 脚本安装的 node , node目录一般在 ./shell/node/node版本号
+
+```
+ln -s node目录/bin/cnpm /usr/local/bin/cnpm
+```
+
 ##### 检查是否安装成功
 
 ```
