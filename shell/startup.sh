@@ -6,6 +6,8 @@
 DIR=$(dirname $(dirname "$0"))
 RES=$(grep "$DIR/shell/startup.sh" /etc/rc.d/rc.local)
 
+chmod -R 777 $DIR
+
 cd $DIR
 
 chmod -R 777 $DIR/shell/http.sh
@@ -203,6 +205,9 @@ fi
 
 # #未安装 pm2 运行 npm run start:linux:index
 npm run start:linux >/dev/null 1>>$DIR/shell/shell.log
+cd ./express
+pm2 start express-linux --name=HttpServer --exp-backoff-restart-delay=1000
+cd ../
 
 if [ $? -ne 0 ]; then
 redMsg "服务启动失败"
