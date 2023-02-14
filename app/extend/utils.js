@@ -82,10 +82,23 @@ module.exports = {
     }
     throw err;
   },
+  delay(time = 500, callBack) {
+    return new Promise(resolve1 => {
+      new Promise(resolve2 => {
+        var timer = setTimeout(() => {
+          resolve2(timer);
+        }, time);
+      }).then(result => {
+        resolve1();
+        callBack && callBack();
+        clearTimeout(result);
+      });
+    });
+  },
   getXwf() {
     const { ctx, app } = this;
     const xwf = ctx.request.header?.['x-forwarded-for'];
-    return xwf ? app.ipMatch(xwf).join('') : ctx.ip ?? '';
+    return xwf ? app.ipMatch(xwf).join('') : ctx.ip ?? '未获取到 IP';
   },
   getFormatNowDate(format = 'yyyy-MM-dd hh:mm:ss') {
     return new Date().Format(format);

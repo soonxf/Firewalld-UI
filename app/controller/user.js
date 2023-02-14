@@ -99,7 +99,7 @@ class UserController extends Controller {
   }
   async captcha() {
     const { ctx } = this;
-
+    await ctx.helper.delay(500);
     const { data: svg, text } = svgCaptcha.createMathExpr({
       mathMin: 1,
       mathMax: 9,
@@ -113,7 +113,7 @@ class UserController extends Controller {
     ctx.helper.response({ data: { publicKey, captchaSecret, svg } });
   }
   async getPublicKeyFingerprint() {
-    const { ctx, app } = this;
+    const { ctx } = this;
     const publicKeyFingerprint = ctx.helper.getPublicKeyFingerprint();
     ctx.helper.response({ data: { publicKeyFingerprint, xfwd: ctx.helper.getXwf() } });
   }
