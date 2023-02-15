@@ -175,22 +175,10 @@ cnpm -v
 cnpm install -registry=https://registry.npm.taobao.org
 ```
 
-##### libstdc++ 报错
+### libstdc++ 报错
 
-> 解决办法分为两种
-> 还可以升级系统解决哈哈哈哈哈哈...
-
-* 方法一: 降低 node 版本
-* 方法二: 安装 libstdc++
-
-###### 降低 node 版本
-
-> 降低 node 版本的方法有(版本建议不要低于 14.0.0)
-
-* 依照 ./shell/node.sh 脚本的指示修改版本
-* 手动安装 node
-
-[手动安装node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
+> 如出现这样的错误 : ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
+> 还可以升级系统应该也可以解决哈哈哈哈哈哈...
 
 ###### 安装 libstdc++
 
@@ -198,13 +186,13 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 [手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
 
-###### 脚本内替换 node 版本
+### 脚本内替换 node 版本
 
 将 ./shell/node.sh 和 ./shell/pm2.sh 中出现 node-v16.18.1-linux-x64 的地方全部替换为手动下载的 node 名字
 
 [下载 node](https://nodejs.org/dist/)
 
-###### 手动安装 pm2
+### 手动安装 pm2
 
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
