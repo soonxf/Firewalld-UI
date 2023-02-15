@@ -43,7 +43,7 @@
   },
   "scripts": {
     "waf": "node ./install",
-    "start": "egg-scripts start --sticky --env=prod --daemon --title=egg-server",
+    "start": "egg-scripts start  --sticky --env=prod --daemon --title=egg-server",
     "start:linux": "egg-scripts start --sticky --env=prod --daemon --title=egg-server",
     "stop:linux": "egg-scripts stop  --sticky --env=prod --daemon --title=egg-server",
     "start:linux:index": "egg-scripts start --sticky --env=prod --daemon --title=egg-server && cd ./express && npm run start",
