@@ -25,8 +25,6 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 soonxf@dingtalk.com
 ```
 
-[toc]
-
 ##### 要求
 
 * linux 系统
