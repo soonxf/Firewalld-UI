@@ -12,7 +12,8 @@ module.exports = app => {
       const believeTrust = app.config?.believe?.trust ?? [];
       const skipIp = believeTrust
         .map((item, index) => (index == 0 ? `^(${item.replaceAll('.', `\\.`)})` : `|^(${item.replaceAll('.', '\\.')})`))
-        .join('');
+        .join('')
+        ?.replace(/\s+/g, '');
       try {
         const response = exec(
           `netstat -ntu | awk '$5!~/${skipIp}/ { print $0}' | grep 'ESTABLISHED' | sed 's/:/ /g' | awk '{ print $1,$4,$5,$6,$7 }'`
