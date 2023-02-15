@@ -177,7 +177,8 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 ### libstdc++ 报错
 
-> 如出现这样的错误: 
+> 如出现这样的错误:
+> 
 > ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
 > 
 > 还可以升级系统应该也可以解决哈哈哈哈哈哈...
