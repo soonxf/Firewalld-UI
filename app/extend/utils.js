@@ -97,8 +97,8 @@ module.exports = {
   },
   getXwf() {
     const { ctx, app } = this;
-    const xwf = ctx.request.header?.['x-forwarded-for'];
-    return xwf ? app.ipMatch(xwf).join('') : ctx.ip ?? '未获取到 IP';
+    const xwf = ctx.request.header?.['x-forwarded-for']?.split(',') ?? [];
+    return xwf ? app.ipMatch(xwf.pop()).join('') : ctx.ip;
   },
   getFormatNowDate(format = 'yyyy-MM-dd hh:mm:ss') {
     return new Date().Format(format);
