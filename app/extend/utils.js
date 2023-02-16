@@ -251,14 +251,31 @@ module.exports = {
   notEmpty(params) {
     return Array.isArray(params) ? params.map(item => (Array.isArray(item) ? item.every(item => item !== '') : item !== '')) : params !== '';
   },
-  async commandQueryportStatus(ports) {
-    if (Array.isArray(ports)) {
-      const portsStatus = [];
-      for await (let item of ports) {
-        const { success, stdout } = await this.command(`firewall-cmd --query-port=${item}/tcp`);
-        success && stdout.indexOf('yes') != -1 && portsStatus.push(item);
-      }
-      return portsStatus;
+  async commandQueryportStatus(data) {
+    if (Array.isArray(data)) {
+      const { success, stdout } = await this.command(`firewall-cmd --list-ports`);
+      const listPorts = success
+        ? stdout?.split(/\s{1,}/).map(item => {
+            item = item.split('/');
+            return [item[0].indexOf('-') != -1 ? item[0].split('-') : item[0], item[1]];
+          })
+        : [];
+
+      data.forEach(item1 => {
+        const port = item1.getDataValue('port');
+        item1.setDataValue('tcpPort', false);
+        item1.setDataValue('udpPort', false);
+        listPorts.forEach(item2 => {
+          item2[1] === 'tcp' &&
+            (Array.isArray(item2[0]) ? item2[0][0] <= port && port <= item2[0][1] : port == item2[0]) &&
+            item1.setDataValue('tcpPort', true);
+
+          item2[1] === 'udp' &&
+            (Array.isArray(item2[0]) ? item2[0][0] <= port && port <= item2[0][1] : port == item2[0]) &&
+            item1.setDataValue('udpPort', true);
+        });
+      });
+      return data;
     } else return [];
   },
   async commandQueryIpRule(ip) {
@@ -270,6 +287,24 @@ module.exports = {
     const isDrop = stdout.indexOf('CUSTOM-DROP') != -1;
     this.app.getLogger('system').info('', `------------------自定义 ipsets CUSTOM-DROP ${isDrop ? '已存在' : '不存在'} ---------------`);
     return isDrop;
+  },
+  async triggerChangePort(status, port, protocol) {
+    const { ctx } = this;
+    let success = false;
+    if (status) {
+      const { success: querySuccess, stdout } = await ctx.helper.command(`firewall-cmd --query-port=${port}/${protocol}`);
+
+      if (querySuccess && stdout.indexOf('yes') != -1) return true;
+
+      const add = await ctx.helper.command(`firewall-cmd --add-port=${port}/${protocol}`);
+      const addPermanent = await ctx.helper.command(`firewall-cmd --add-port=${port}/${protocol} --permanent`);
+      success = add.success && addPermanent.success;
+    } else {
+      const remove = await ctx.helper.command(`firewall-cmd --remove-port=${port}/${protocol}`);
+      const removePermanent = await ctx.helper.command(`firewall-cmd --remove-port=${port}/${protocol} --permanent`);
+      success = remove.success && removePermanent.success;
+    }
+    return success;
   },
   async newIpset() {
     this.app.getLogger('system').info('', `------------------即将新建 ipsets CUSTOM-DROP---------------`);
@@ -437,7 +472,7 @@ Array.prototype.syncMap = async function (callBack = async () => {}) {
     const data = Array.isArray(this) ? this : [];
     const response = [];
     for await (let item of data) {
-      const res = await callBack(item);
+      const res = await callBack(item, response.length);
       response.push(res);
     }
     return response;

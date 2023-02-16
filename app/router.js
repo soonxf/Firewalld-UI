@@ -26,6 +26,7 @@ module.exports = app => {
   router.post('/deleteBlacklist', jwt, controller.blacklist.deleteBlacklist);
   router.post('/creatdProject', jwt, controller.project.creatdProject);
   router.get('/getProject', jwt, controller.project.getProject);
+  router.post('/updateProjectPortStatus', jwt, controller.project.updateProjectPortStatus);
   router.post('/updateSortProject', jwt, controller.project.updateSortProject);
   router.post('/updateProject', jwt, controller.project.updateProject);
   router.post('/deleteProject', jwt, controller.project.deleteProject);
