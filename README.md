@@ -63,6 +63,12 @@ soonxf@dingtalk.com
   * express/ssl: 存放 https 证书
   * express/dist: 前端静态资源
   * express/config.js: 前端配置文件
+  * express/config.js.httpPort: http 端口
+  * express/config.js.httpsPort: https 端口(没有 https 证书访问无效)
+  * express/config.js.limiter: 前端流量限制配置
+  * express/config.js.proxy.target:代理的后端路径
+
+> 如 7001 端口被占用,修改 根目录/config/config.prod.js.cluster.listen.port 同步修改 express/config.js.proxy.target 最后面的 端口即可,重启生效
 
 ### startup.sh 脚本
 
