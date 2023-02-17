@@ -64,7 +64,7 @@ soonxf@dingtalk.com
   * express/dist: 前端静态资源
   * express/config.js: 前端配置文件
   * express/config.js.httpPort: http 端口
-  * express/config.js.httpsPort: https 端口(没有 https 证书访问无效)
+  * express/config.js.httpsPort: https 端口(没有部署 https 证书无法访问)
   * express/config.js.limiter: 前端流量限制配置
   * express/config.js.proxy.target:代理的后端路径
 
