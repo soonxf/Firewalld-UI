@@ -243,9 +243,11 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 #### 加入黑名单失败
 
-> 可能已经通过命令行方式加入过黑名单(白名单)
+> 可能已经通过终端方式加入过黑名单(白名单)
 > 
 > 可以通过查看防火墙所有富规则来确定
+>
+> 任意目录,终端执行
 
 ```
 firewall-cmd --list-rich-rules
@@ -256,6 +258,8 @@ firewall-cmd --list-rich-rules
 > 可能这个端口是范围性端口,目前不支持切换范围性端口的状态
 > 
 > 可以通过查看防火墙所有开放端口来确定
+>
+> 任意目录,终端执行
 
 ```
 firewall-cmd --list-ports
