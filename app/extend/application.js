@@ -1,6 +1,6 @@
 const path = require('path');
-const { exec } = require('child_process');
 const directory = path.join(__dirname, '../validate');
+const crypto = require('crypto');
 
 module.exports = {
   //查询是否刚开机查询黑名单(开机180秒内启动即算刚开机),
@@ -222,6 +222,14 @@ module.exports = {
     await this.addRule(item);
     this.ipsCache.splice(0, 1);
     await this.checkIpsCache();
+  },
+  setSalt(value) {
+    const salt = this.config?.jwt?.secret ?? '';
+    return crypto.createHash('sha512').update(`${value}${salt}`).digest('hex');
+  },
+  matchPassword(plaintext, ciphertext) {
+    const password = this.setSalt(plaintext);
+    return ciphertext === password;
   },
   async serverDidReady() {
     this.server.on('timeout', socket => this.ctx.helper.systemTimeOut());

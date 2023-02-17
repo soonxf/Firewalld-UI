@@ -11,8 +11,10 @@ class UserService extends Service {
       await ctx.model.User.sync({ force: true });
 
       const data = await ctx.model.User.create({ username, password, secret, config });
-      delete data['password'];
-      delete data['secret'];
+
+      data.setDataValue('password', undefined);
+      data.setDataValue('secret', undefined);
+
       return ctx.helper.success(data);
     });
   }
@@ -20,18 +22,17 @@ class UserService extends Service {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.User.update({ password }, { where: { username, secret } });
-
       return ctx.helper.success(data);
     });
   }
-  async findUserOne(query) {
+  async findUserOne(body) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.User.findOne({
-        where: query,
-        attributes: {
-          exclude: ['secret'],
-        },
+        where: body,
+        // attributes: {
+        //   exclude: ['secret'],
+        // },
       });
       return ctx.helper.success(data);
     });

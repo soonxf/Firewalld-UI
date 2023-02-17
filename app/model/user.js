@@ -3,8 +3,9 @@
 'use strict';
 // const stringRandom = require('string-random');
 const crypto = require('crypto');
-module.exports = app => {
+module.exports = (app, sequelize) => {
   const { DataTypes } = app.Sequelize;
+
   const User = app.model.define(
     'user',
     {
@@ -24,7 +25,7 @@ module.exports = app => {
         //   return crypto.createHash('md5').update(this.getDataValue('password')).digest('hex');
         // },
         set(value) {
-          this.setDataValue('password', crypto.createHash('md5').update(value).digest('hex'));
+          this.setDataValue('password', app.setSalt(value));
         },
       },
       secret: {
@@ -42,14 +43,14 @@ module.exports = app => {
       // 不使用created_at , updated_at
       timestamps: false,
       defaultScope: {
-        dataValues: {
-          // 排除密码，不返回密码
-          exclude: ['password'],
-        },
-        attributes: {
-          // 排除密码，不返回密码
-          exclude: ['password'],
-        },
+        // dataValues: {
+        //   // 排除密码，不返回密码
+        //   exclude: ['password'],
+        // },
+        // attributes: {
+        //   // 排除密码，不返回密码
+        //   exclude: ['password'],
+        // },
       },
     }
   );
