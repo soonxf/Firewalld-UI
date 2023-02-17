@@ -158,6 +158,8 @@ grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 > ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
 > 
 > 还可以升级系统应该也可以解决哈哈哈哈哈哈...
+>
+> 降低 node 版本 应该也是可以的 建议 node 版本>=14
 
 ###### 安装 libstdc++
 
