@@ -144,7 +144,7 @@ Admin123456@
 > 将 你的用户名 (五个汉字)替换为自己注册的用户名,完整复制不要丢失
 
 ```
-sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";'
+echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";')
 ```
 
 ### 查看 JWT 密钥
@@ -152,11 +152,16 @@ sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "�
 > 项目根目录打开 linux 终端执行
 
 ```
-grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
+echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
 ```
 
 > 注意: 注册口令 和 JWT 密钥 用来修改密码等,妥善保管,切勿泄漏
 
+### 合并示例,直接复制将 "admin" 修改即可
+
+```
+echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "admin";') && echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
+```
 
 ### 部署https
 
