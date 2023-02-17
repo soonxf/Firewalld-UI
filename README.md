@@ -13,10 +13,17 @@ Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创
 
 > 演示环境没有部署在 linux ,因此很多功能是失效的
 
+<div align="center">
+
 ## [点击查看演示](https://340200.xyz:65001)
 
+</div>
+
+<div align="center">
 
 [▶ 必看:几乎大概肯定一定会发生的问题及解决方法 ◀](#问题)
+
+</div>
 
 ### 请务必仔细阅读文档...
 
@@ -68,7 +75,7 @@ soonxf@dingtalk.com
   * express/config.js.limiter: 前端流量限制配置
   * express/config.js.proxy.target:代理的后端路径
 
-[▶ 部署 https ◀](#部署 https)
+[▶ 部署 https ◀](#部署https)
 
 > 如 7001 端口被占用,修改 根目录/config/config.prod.js.cluster.listen.port 同步修改 express/config.js.proxy.target 最后面的 端口即可,重启生效
 
@@ -145,7 +152,7 @@ grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 ```
 
 
-### 部署 https
+### 部署https
 
 * 将证书存储在 express/ssl
 * 修改 express/config.js 中的 ssl.key ssl.crt
