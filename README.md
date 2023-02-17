@@ -68,7 +68,7 @@ soonxf@dingtalk.com
   * express/config.js.limiter: 前端流量限制配置
   * express/config.js.proxy.target:代理的后端路径
 
-[▶ 部署 https ◀](#部署https)
+[▶ 部署 https ◀](#部署 https)
 
 > 如 7001 端口被占用,修改 根目录/config/config.prod.js.cluster.listen.port 同步修改 express/config.js.proxy.target 最后面的 端口即可,重启生效
 
