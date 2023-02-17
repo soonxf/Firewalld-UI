@@ -165,7 +165,7 @@ grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 
 [手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
 
-##### 脚本下载依赖失败
+### 脚本下载依赖失败
 
 > 删除根目录 node_modules
 
