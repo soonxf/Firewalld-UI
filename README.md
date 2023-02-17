@@ -239,6 +239,27 @@ cnpm install -registry=https://registry.npm.taobao.org
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
 
+### 解答
+
+#### 加入黑名单失败
+
+> 可能已经通过命令行方式加入过黑名单(白名单)
+> 可以通过查看防火墙所有富规则来确定
+
+```
+firewall-cmd --list-rich-rules
+```
+
+#### 开启(关闭)端口失败
+
+> 可能这个端口是范围性端口,目前不支持切换范围性端口的状态
+> 可以通过查看防火墙所有开放端口来确定
+
+```
+firewall-cmd --list-ports
+```
+
+
 #### gitee
 
 [Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
