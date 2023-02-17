@@ -145,6 +145,20 @@ grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 
 ### 问题
 
+### libstdc++ 报错
+
+> 如出现这样的错误:
+> 
+> ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
+> 
+> 还可以升级系统应该也可以解决哈哈哈哈哈哈...
+
+###### 安装 libstdc++
+
+> 安装 libstdc++ 有风险,建议备份后再尝试
+
+[手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
+
 ##### 脚本下载依赖失败
 
 > 删除根目录 node_modules
@@ -176,20 +190,6 @@ cnpm -v
 ```
 cnpm install -registry=https://registry.npm.taobao.org
 ```
-
-### libstdc++ 报错
-
-> 如出现这样的错误:
-> 
-> ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
-> 
-> 还可以升级系统应该也可以解决哈哈哈哈哈哈...
-
-###### 安装 libstdc++
-
-> 安装 libstdc++ 有风险,建议备份后再尝试
-
-[手动安装 libstdc](https://blog.340200.xyz/2022/12/19/ruan-jian/centos-libstdc.so.6-ruan-lian-jie-ku-sheng-ji/)
 
 ### 脚本内替换 node 版本
 
