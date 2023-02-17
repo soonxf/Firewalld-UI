@@ -155,6 +155,8 @@ sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "�
 grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g'
 ```
 
+> 注意: 注册口令 和 JWT 密钥 用来修改密码等,妥善保管,切勿泄漏
+
 
 ### 部署https
 
