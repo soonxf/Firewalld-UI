@@ -258,6 +258,11 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 [下载 node](https://nodejs.org/dist/)
 
+
+#### 手动安装 node
+
+[手动安装 node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
+
 ### 手动安装 pm2
 
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
