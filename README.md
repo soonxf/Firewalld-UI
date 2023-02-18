@@ -83,6 +83,8 @@ soonxf@dingtalk.com
 
 > 如 7001 端口被占用,修改 根目录/config/config.prod.js.cluster.listen.port 同步修改 express/config.js.proxy.target 最后面的 端口即可,重启生效
 
+---
+
 ### startup.sh 脚本
 
 > 暖心的自动化脚本,做到了那些功能
@@ -111,13 +113,20 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 
 > 启动完成浏览器打开 本机IP:5000(5001)
 
+---
+
 ### 部署和运行
 
 * clone 项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases)
 * 拷贝解压到 linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
-> 注意:部署成功后一定要在 系统设置 重新生成一下 jwt 和 captcha 密钥
+> 注意:部署成功后一定要在 系统设置 重新生成一下 jwt 密钥 和 captcha 密钥,请勿泄漏两种密钥
+> 重新生成 JWT 密钥后需要重新修改密码才能登录
+
+[▶ 修改密码 ◀](#合并示例)
+
+---
 
 ### 登录
 
@@ -135,7 +144,14 @@ admin
 Admin123456@
 ```
 
-### 查看注册口令
+### 修改密码
+
+步骤
+
+* 进入登录页点击修改密码
+* 填入用户名新密码,注册口令 JWT 密钥
+
+##### 查看注册口令
 
 > 项目根目录打开终端执行,
 >
@@ -147,7 +163,7 @@ Admin123456@
 echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";')
 ```
 
-### 查看 JWT 密钥
+##### 查看 JWT 密钥
 
 > 项目根目录打开 linux 终端执行,完整复制不要丢失
 
@@ -157,13 +173,16 @@ echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 
 
 > 注意: 注册口令 和 JWT 密钥 用来修改密码等,妥善保管,切勿泄漏
 
-### 合并示例
+##### 合并示例
+
+###### 修改密码需要用到 JWT 密钥 和 注册口令
 
 > 复制修改 admin (五个字母)替换为自己注册的用户名,完整复制不要丢失
 
 ```
 echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "admin";') && echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
 ```
+---
 
 ### 部署https
 
@@ -173,6 +192,7 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 
 > ssl.key ssl.crt 填入文件名即可,不需要路径,空 (表示空 == "") 表示不启用 https
 
+---
 
 ### 问题
 
@@ -228,6 +248,8 @@ cnpm -v
 cnpm install -registry=https://registry.npm.taobao.org
 ```
 
+---
+
 ### 脚本内替换 node 版本
 
 将 ./shell/node.sh 和 ./shell/pm2.sh 中出现 node-v16.18.1-linux-x64 的地方全部替换为手动下载的 node 名字
@@ -238,6 +260,7 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
+---
 
 ### 解答
 
