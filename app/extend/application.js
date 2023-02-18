@@ -258,16 +258,14 @@ module.exports = {
           if (sitesDisabled || ipsDisabled || portsDisabled || abroadDisabled || limitDisabled) {
             if (limitDisabled) {
               const {
-                data: { rows = [] },
+                data: { count = 0 },
                 equalNull,
               } = await ctx.service.access.findAllAccessLog({
                 ip: item.ip,
                 startTime: ctx.helper.getFormatDate(new Date().getTime() - rowItem.limitShield * 60 * 1000),
                 endTime: ctx.helper.getFormatNowDate(),
               });
-
-              if (equalNull == false && rows?.[0]?.num - rows?.[rows.length - 1]?.num >= rowItem.limitTotal)
-                return await this.drop(ip, port, fullSite, rowItem.shieldTime ?? expirationTime);
+              if (equalNull == false && count >= rowItem.limitTotal) return await this.drop(ip, port, fullSite, rowItem.shieldTime ?? expirationTime);
             } else return await this.drop(ip, port, fullSite, rowItem.shieldTime ?? expirationTime);
           }
         }

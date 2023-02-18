@@ -48,21 +48,16 @@ class AccessService extends Service {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const data = await ctx.model.Access.findAndCountAll({
-        where: ctx.helper.where(
-          [ctx.helper.notEmpty([[startTime, endTime], ip])],
-          [
-            {
-              time: {
-                [ctx.helper.seq().Op.between]: ctx.helper.betweenTime(startTime, endTime),
-              },
+        where: ctx.helper.where(ctx.helper.notEmpty([[startTime, endTime], ip]), [
+          {
+            time: {
+              [ctx.helper.seq().Op.between]: [startTime, endTime],
             },
-            {
-              ip: {
-                [ctx.helper.seq().Op.like]: `%${ip}%`,
-              },
-            },
-          ]
-        ),
+          },
+          {
+            ip,
+          },
+        ]),
         order: [['id', 'DESC']],
       });
       return ctx.helper.success(data);

@@ -3,6 +3,7 @@ module.exports = app => {
   return {
     schedule: {
       interval: `${app.config?.firewalld?.interval ?? 1}m`,
+      // interval: `10s`,
       type: 'all',
       immediate: false,
     },
