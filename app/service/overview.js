@@ -47,7 +47,13 @@ class OverviewController extends Service {
         const { success } = await ctx.helper.command('systemctl start firewalld');
         await app.startUp(false);
         return ctx.helper.success(success, () =>
-          ctx.helper.serviceAddSystem(12, `开启防火墙${success ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`)
+          ctx.helper.serviceAddSystem(
+            12,
+            ctx.helper.getMessage.overview(0, {
+              success,
+              time: ctx.helper.getFormatNowDate(),
+            })
+          )
         );
       },
       async () => await ctx.helper.command('systemctl stop firewalld')
@@ -58,7 +64,13 @@ class OverviewController extends Service {
     return await ctx.helper.seqTransaction(async () => {
       const { success } = await ctx.helper.command('systemctl stop firewalld');
       return ctx.helper.success(success, () =>
-        ctx.helper.serviceAddSystem(12, `关闭防火墙${success ? '成功' : '失败'} 时间:${ctx.helper.getFormatNowDate()}`)
+        ctx.helper.serviceAddSystem(
+          12,
+          ctx.helper.getMessage.overview(1, {
+            success,
+            time: ctx.helper.getFormatNowDate(),
+          })
+        )
       );
     });
   }

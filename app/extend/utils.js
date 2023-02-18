@@ -176,10 +176,26 @@ module.exports = {
   },
   drop(ip, time) {
     return new Promise((resolve, reject) => {
-      const command = `firewall-cmd  --add-rich-rule='rule family=ipv4 source address="${ip}"  drop' --timeout=${time}`;
+      const command = `firewall-cmd --add-rich-rule='rule family=ipv4 source address="${ip}" log prefix="Micro-Firewall"   drop' --timeout=${time}`;
       exec(command, (err, stdout, stderr) => {
         resolve({ err, stdout, stderr, success: stderr || err ? false : true });
       });
+    });
+  },
+  removeDrop(ip, unblocked = true) {
+    const { ctx } = this;
+    ctx.helper.ipsCacheDel(ip);
+    return new Promise((resolve, reject) => {
+      const command = `firewall-cmd --remove-rich-rule 'rule family=ipv4 source address="${ip}" log prefix="Micro-Firewall"   drop'`;
+      if (unblocked == false) {
+        resolve({ success: true });
+      } else {
+        exec(command, (err, stdout, stderr) => {
+          const success = stderr || err ? false : true;
+          success && ctx.helper.serviceAddSystem(5, unblocked ? `移除已解禁黑名单 IP ${ip}` : `移除屏蔽中黑名单 IP ${ip}`);
+          resolve({ err, stdout, stderr, success });
+        });
+      }
     });
   },
   async dropCommand(ip, expirationTime) {
@@ -279,7 +295,7 @@ module.exports = {
     } else return [];
   },
   async commandQueryIpRule(ip) {
-    const { success, stdout } = await this.command(`firewall-cmd --list-rich-rules | grep '"${ip}"' | grep drop`);
+    const { success, stdout } = await this.command(`firewall-cmd --list-rich-rules | grep ${ip} | grep Micro-Firewall | grep drop`);
     return success ? (stdout == '' ? false : true) : false;
   },
   async isCustomDrop() {
@@ -445,6 +461,77 @@ module.exports = {
     });
 
     return { str, end, day, rangeDate };
+  },
+  getMessage: {
+    common(index, obj = {}) {
+      const message = ['失败', '成功', '创建失败', '服务即将重启', '黑名单'];
+      return message[index];
+    },
+    blacklist(index, obj = {}) {
+      const message = [
+        '重新加入黑名单成功',
+        '修改还在屏蔽中的黑名单时间成功',
+        `重新加入黑名单 IP: ${obj.ip} 地点: ${obj.site} 端口: ${obj.port} 屏蔽时间 ${obj.expirationTimeFormat}`,
+        `修改还在屏蔽黑名单的时间 IP: ${obj.ip} 地点: ${obj.site} 端口: ${obj.port} 屏蔽时间 ${obj.expirationTimeFormat}`,
+        '重新加入或者修改还在屏蔽中的黑名单时间失败',
+      ];
+      return message[index];
+    },
+    user(index, obj = {}) {
+      const message = [
+        '已经注册过',
+        `用户名 ${obj.username}  注册失败,已经注册过`,
+        `用户名 ${obj.username}  注册成功`,
+        '修改失败',
+        `用户名 ${obj.username}  修改密码失败`,
+        `用户名 ${obj.username}  修改密码成功`,
+        '请检查用户名或者密码',
+        `用户名 ${obj.usernameDecrypt} 不存在`,
+        `用户名 ${obj.usernameDecrypt} 登录密码错误`,
+        `用户名 ${obj.usernameDecrypt} 登陆成功`,
+      ];
+      return message[index];
+    },
+    access(index, obj = {}) {
+      const message = [`删除日志 ${obj.count} 条`];
+      return message[index];
+    },
+    overview(index, obj = {}) {
+      const message = [`开启防火墙${obj.success ? '成功' : '失败'} 时间:${obj.time}`, `关闭防火墙${obj.success ? '成功' : '失败'} 时间:${obj.time}`];
+      return message[index];
+    },
+    project(index, obj = {}) {
+      const message = [
+        `新建项目,项目名称:${obj.name} 项目端口:${obj.port}`,
+        `删除项目,项目名称:${obj.name} 项目端口:${obj.port}`,
+        `已经绑定过端口${obj.port}`,
+        `失败,错误原因:${obj.message?.join(',')}`,
+      ];
+      return message[index];
+    },
+    rule(index, obj = {}) {
+      const message = [`新建规则 时间${obj.time}`, `删除规则 ${obj.count} 条`];
+      return message[index];
+    },
+    application(index, obj = {}) {
+      const message = [
+        `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`,
+        `查询开机时间成功,开机时间 ${obj.startTime} 秒`,
+        `------------------查询开机时间失败 err------------------`,
+        `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`,
+        `------------------${this.env} 环境不校验开机时间------------------`,
+        `重启检测到黑名单, IP :${obj.ip} 禁止时间:${obj.surplus} 秒`,
+        '重启服务在数据库中查询到黑名单',
+        `${obj.port}  ${obj.ip}  ${obj.site} 禁止时间  ${obj.surplus} 秒`,
+        '开机在数据库中查询到黑名单',
+        `开机检测到黑名单, IP :${obj.ip} 禁止时间:${obj.surplus} 秒`,
+        `开机检测到黑名单屏蔽失败, IP :${obj.ip} 禁止时间:${obj.surplus} 秒`,
+        `加入黑名单失败 ${obj.ip}`,
+        `加入黑名单成功, IP :${obj.ip} 封禁时间 ${obj.expirationTime} 秒`,
+        `加入黑名单失败, IP :${obj.ip} ${obj.message}`,
+      ];
+      return message[index];
+    },
   },
 };
 

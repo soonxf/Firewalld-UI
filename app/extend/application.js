@@ -12,24 +12,29 @@ module.exports = {
         try {
           const { stdout, stderr, err } = await ctx.helper.command(`cat /proc/uptime`);
           if (stderr || err) {
-            ctx.helper.serviceAddSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
+            ctx.helper.serviceAddSystem(11, ctx.helper.getMessage.application(0));
             resolve(false);
           } else {
             const time = this.config?.startupTime ?? 300;
             const startTime = stdout.split(/\s{1,}/)?.[0] ?? 1000000;
-            ctx.helper.serviceAddSystem(11, `查询开机时间成功,开机时间 ${startTime} 秒`);
+            ctx.helper.serviceAddSystem(
+              11,
+              ctx.helper.getMessage.application(1, {
+                startTime,
+              })
+            );
             resolve(startTime < time ? true : false);
           }
         } catch (e) {
           console.log('');
-          this.getLogger('system').info('', `------------------查询开机时间失败 err------------------`);
+          this.getLogger('system').info('', ctx.helper.getMessage.application(2));
           console.log('');
-          ctx.helper.serviceAddSystem(11, `查询开机时间失败,请检查 cat /proc/uptime 命令是否正常`);
+          ctx.helper.serviceAddSystem(11, ctx.helper.getMessage.application(3));
           resolve(false);
         }
       } else {
         console.log('');
-        this.getLogger('system').info('', `------------------${this.env} 环境不校验开机时间------------------`);
+        this.getLogger('system').info('', ctx.helper.getMessage.application(4));
         console.log('');
         resolve(false);
       }
@@ -51,19 +56,62 @@ module.exports = {
 
       reload
         ? ctx.helper
-            .serviceAddSystem(3, `重启检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`)
+            .serviceAddSystem(
+              3,
+              ctx.helper.getMessage.application(5, {
+                ip: item.ip,
+                surplus,
+              })
+            )
             .then(() =>
-              this.getLogger('drop').info('重启服务在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`)
+              this.getLogger('drop').info(
+                ctx.helper.getMessage.application(6),
+                ctx.helper.getMessage.application(7, {
+                  port: item.port,
+                  ip: item.ip,
+                  site: item.site,
+                  surplus,
+                })
+              )
             )
         : await ctx.helper.drop(item.ip, surplus).then(({ err, stdout, stderr, success }) => {
             success
               ? (() => {
-                  del && this.getLogger('drop').info('开机在数据库中查询到黑名单', `${item.port}  ${item.ip}  ${item.site} 禁止时间  ${surplus} 秒`);
-                  del && ctx.helper.serviceAddSystem(3, `开机检测到黑名单, IP :${item.ip} 禁止时间:${surplus} 秒`);
+                  del &&
+                    this.getLogger('drop').info(
+                      ctx.helper.getMessage.application(8),
+                      ctx.helper.getMessage.application(7, {
+                        port: item.port,
+                        ip: item.ip,
+                        site: item.site,
+                        surplus,
+                      })
+                    );
+                  del &&
+                    ctx.helper.serviceAddSystem(
+                      3,
+                      ctx.helper.getMessage.application(9, {
+                        ip: item.ip,
+                        surplus,
+                      })
+                    );
                 })()
               : ctx.helper
-                  .serviceAddSystem(3, `开机检测到黑名单屏蔽失败, IP :${item.ip} 禁止时间:${surplus} 秒`)
-                  .then(() => this.getLogger('drop').info('黑名单', `加入黑名单失败 ${item.ip}`));
+                  .serviceAddSystem(
+                    3,
+                    ctx.helper.getMessage.application(10, {
+                      ip: item.ip,
+                      surplus,
+                    })
+                  )
+                  .then(() =>
+                    this.getLogger('drop').info(
+                      ctx.helper.getMessage.common(4),
+                      ctx.helper.getMessage.application(11, {
+                        ip: item.ip,
+                      })
+                    )
+                  );
           });
     });
   },
@@ -90,7 +138,7 @@ module.exports = {
     const localPort = data[2] ? parseInt(data[2]) : '本地端口未知';
     const remoteIp = ip ?? '远程IP未知';
     const remotePort = data[4] ?? '远程端口未知';
-    const connectionTimeTo = new Date(connectionTime).toString() != 'Invalid Date' ? connectionTime : new Date().Format('yyyy-MM-dd hh:mm:ss');
+    const connectionTimeTo = new Date(connectionTime).toString() != 'Invalid Date' ? connectionTime : this.ctx.helper.getFormatNowDate();
 
     return { type, localIp, localPort, remoteIp, remotePort, connectionTime: connectionTimeTo };
   },
@@ -104,7 +152,7 @@ module.exports = {
 
     const site = this.parseIpSite(parseIp.remoteIp);
     const parse = {
-      time: new Date().Format('yyyy-MM-dd hh:mm:ss'),
+      time: ctx.helper.getFormatNowDate(),
       type: parseIp.type,
       ip: parseIp.remoteIp,
       port: parseIp.localPort,
@@ -162,8 +210,19 @@ module.exports = {
       data: { success, message },
     } = await ctx.service.blacklist.addBlacklist({ ip, port, expirationTime, site: fullSite, time });
     success
-      ? ctx.helper.serviceAddSystem(4, `加入黑名单成功, IP :${ip} 封禁时间 ${expirationTime} 秒`)
-      : ctx.helper.serviceAddSystem(4, `加入黑名单失败, IP :${ip} ${message}`);
+      ? ctx.helper.serviceAddSystem(
+          4,
+          ctx.helper.getMessage.application(12, {
+            ip,
+            expirationTime,
+          })
+        )
+      : ctx.helper.serviceAddSystem(
+          4,
+          ctx.helper.getMessage.application(13, {
+            message,
+          })
+        );
     return true;
   },
   async addRule(item, expirationTime = 259200) {

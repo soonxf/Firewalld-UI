@@ -68,17 +68,17 @@ class AccessService extends Service {
       return ctx.helper.success(data);
     });
   }
-  async addAccessLog(params) {
+  async addAccessLog(body) {
     const { ctx } = this;
     await ctx.model.Access.sync();
     // await ctx.model.Ip.sync();
     // await ctx.model.Ip.create({ ip: params.ip, site: params.site });
     await ctx.model.Access.create({
-      ...params,
+      ...body,
       num:
         (await ctx.model.Access.count({
           where: {
-            ip: params.ip,
+            ip: body.ip,
           },
         })) + 1,
     });
@@ -89,7 +89,7 @@ class AccessService extends Service {
       const count = await ctx.model.Access.destroy({
         where: { id: ids },
       });
-      return ctx.helper.success('成功', () => ctx.helper.serviceAddSystem(8, `删除日志 ${count} 条`));
+      return ctx.helper.success(ctx.helper.getMessage.common(1), () => ctx.helper.serviceAddSystem(8, ctx.helper.getMessage.access(0, { count })));
     });
   }
 }

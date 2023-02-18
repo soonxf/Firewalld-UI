@@ -48,7 +48,7 @@ class SystemService extends Service {
       await ctx.model.System.destroy({
         where: { id: ids },
       });
-      return ctx.helper.success('成功');
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
 }

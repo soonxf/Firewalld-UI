@@ -14,7 +14,7 @@ class RuleService extends Service {
         sort: (await ctx.model.Rule.max('sort')) + 1,
         time,
       });
-      return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(9, `新建规则 时间${time}`));
+      return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(9, ctx.helper.getMessage.rule(0, { time })));
     });
   }
   async updateRuleEffective({ effective = '', id = '' }) {
@@ -30,7 +30,7 @@ class RuleService extends Service {
           },
         }
       );
-      return ctx.helper.success('成功');
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
   async getRule({ page = 1, pageSize = 10, effective = '' }) {
@@ -68,7 +68,7 @@ class RuleService extends Service {
             }
           )
       );
-      return ctx.helper.success('成功');
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
   async deleteRule({ ids }) {
@@ -77,8 +77,8 @@ class RuleService extends Service {
       await ctx.model.Rule.destroy({
         where: { id: ids },
       });
-      ctx.helper.serviceAddSystem(10, `删除规则 ${ids.length} 条`);
-      return ctx.helper.success('成功');
+      ctx.helper.serviceAddSystem(10, ctx.helper.getMessage.rule(1, { count: ids.length }));
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
 }

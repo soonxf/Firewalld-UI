@@ -32,10 +32,10 @@ class UserController extends Controller {
     } = await ctx.service.user.findUserCount();
 
     (equalNull == false || count != 0) &&
-      ctx.helper.throw('已经注册过', () => ctx.helper.serviceAddSystem(16, `用户名 ${username}  注册失败,已经注册过`));
+      ctx.helper.throw(ctx.helper.getMessage.user(0), () => ctx.helper.serviceAddSystem(16, ctx.helper.getMessage.user(1, { username })));
 
     const response = await ctx.service.user.register({ username, password, secret });
-    ctx.helper.response({ data: response.data }, () => ctx.helper.serviceAddSystem(16, `用户名 ${username}  注册成功`));
+    ctx.helper.response({ data: response.data }, () => ctx.helper.serviceAddSystem(16, ctx.helper.getMessage.user(2, { username })));
   }
   async updatePass() {
     const { ctx } = this;
@@ -55,10 +55,25 @@ class UserController extends Controller {
 
     ctx.helper.captchaCheck(playload, code);
 
-    jwtSecret != ctx.app.config.jwt.secret && ctx.helper.throw('修改失败', () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码失败`));
+    jwtSecret != ctx.app.config.jwt.secret &&
+      ctx.helper.throw(ctx.helper.getMessage.user(3), () =>
+        ctx.helper.serviceAddSystem(
+          15,
+          ctx.helper.getMessage.user(4, {
+            username,
+          })
+        )
+      );
 
     const data = await ctx.service.user.updateUserOne({ username, password, secret });
-    ctx.helper.response(data, () => ctx.helper.serviceAddSystem(15, `用户名 ${username}  修改密码成功`));
+    ctx.helper.response(data, () =>
+      ctx.helper.serviceAddSystem(
+        15,
+        ctx.helper.getMessage.user(5, {
+          username,
+        })
+      )
+    );
   }
   async login() {
     const { ctx, app } = this;
@@ -88,19 +103,41 @@ class UserController extends Controller {
       // password: passwordDecrypt,
     });
 
-    equalNull && ctx.helper.throw('请检查用户名或者密码', () => ctx.helper.serviceAddSystem(14, `用户名 ${usernameDecrypt} 不存在`));
+    equalNull &&
+      ctx.helper.throw(ctx.helper.getMessage.user(6), () =>
+        ctx.helper.serviceAddSystem(
+          14,
+          ctx.helper.getMessage.user(7, {
+            usernameDecrypt,
+          })
+        )
+      );
 
     const getPassword = data.getDataValue('password') ?? '';
 
     app.matchPassword(passwordDecrypt, getPassword) ||
-      ctx.helper.throw('请检查用户名或者密码', () => ctx.helper.serviceAddSystem(14, `用户名 ${usernameDecrypt} 登录密码错误`));
+      ctx.helper.throw(ctx.helper.getMessage.user(6), () =>
+        ctx.helper.serviceAddSystem(
+          14,
+          ctx.helper.getMessage.user(8, {
+            usernameDecrypt,
+          })
+        )
+      );
 
     data.setDataValue('fingerprint', ctx.helper.decrypt(fingerprint, 2));
     data.setDataValue('token', ctx.helper.jwtSecret(JSON.stringify(data)));
     data.setDataValue('password', undefined);
     data.setDataValue('secret', undefined);
 
-    ctx.helper.response({ data }, () => ctx.helper.serviceAddSystem(14, `用户名 ${usernameDecrypt} 登陆成功`));
+    ctx.helper.response({ data }, () =>
+      ctx.helper.serviceAddSystem(
+        14,
+        ctx.helper.getMessage.user(9, {
+          usernameDecrypt,
+        })
+      )
+    );
   }
   async captcha() {
     const { ctx } = this;

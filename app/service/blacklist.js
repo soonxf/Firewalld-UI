@@ -18,32 +18,45 @@ class BlacklistService extends Service {
 
       const response = await ctx.service.blacklist.findBlacklistOne({ ip }, true);
 
+      const remove = await ctx.helper.commandQueryIpRule(ip);
+
       if (response.equalNull)
         return ctx.helper.success(await ctx.helper.blacklistCreate({ ip, expirationTime, site, port, time, expirationTimeFormat }));
 
       const unblocked = response?.data?.unblocked ?? false;
 
-      const message = unblocked ? '重新加入黑名单成功' : '修改还在屏蔽中的黑名单时间成功';
+      const message = unblocked ? ctx.helper.getMessage.blacklist(0) : ctx.helper.getMessage.blacklist(1);
 
-      const systemMessage = unblocked
-        ? `重新加入黑名单 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`
-        : `修改还在屏蔽黑名单的时间 IP: ${ip} 地点: ${site} 端口: ${port} 屏蔽时间 ${expirationTimeFormat}`;
+      const { data: success } = await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: unblocked == false || remove });
 
-      const { data: success } = await ctx.service.blacklist.updateBlacklistOne({ ip, expirationTime, time, remove: unblocked == false });
-
-      return ctx.helper.success({ ip, success, message: success ? message : '重新加入或者修改还在屏蔽中的黑名单时间失败' }, () =>
-        ctx.helper.serviceAddSystem(4, systemMessage)
+      return ctx.helper.success({ ip, success, message: success ? message : ctx.helper.getMessage.blacklist(4) }, () =>
+        ctx.helper.serviceAddSystem(
+          4,
+          unblocked
+            ? ctx.helper.getMessage.blacklist(2, {
+                ip,
+                site,
+                port,
+                expirationTimeFormat,
+              })
+            : ctx.helper.getMessage.blacklist(3, {
+                ip,
+                site,
+                port,
+                expirationTimeFormat,
+              })
+        )
       );
     });
   }
   async findBlacklistOne({ ip }, raw = false) {
     const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
-      const response = await ctx.model.Blacklist.findOne({ where: { ip } });
-      if (raw) return ctx.helper.success(response);
+      const data = await ctx.model.Blacklist.findOne({ where: { ip } });
+      if (raw) return ctx.helper.success(data);
       const firewallStatus = await ctx.helper.commandQueryIpRule(ip);
-      response?.setDataValue?.('firewallStatus', firewallStatus);
-      return ctx.helper.success(response == null ? { firewallStatus } : response);
+      data?.setDataValue?.('firewallStatus', firewallStatus);
+      return ctx.helper.success(data == null ? { firewallStatus } : data);
     });
   }
   // unblocked true 是超过屏蔽时间 false 是正在屏蔽
@@ -57,7 +70,7 @@ class BlacklistService extends Service {
 
       ctx.helper.ipsCachePut(ip, { ip, expirationTime, time }, expirationTime);
 
-      remove && (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${ip}" drop"`));
+      remove && (await ctx.helper.removeDrop(ip));
 
       return ctx.helper.success(await ctx.helper.dropCommand(ip, expirationTime));
     });
@@ -131,7 +144,7 @@ class BlacklistService extends Service {
     });
   }
   async deleteBlacklist({ ids }) {
-    const { ctx, app } = this;
+    const { ctx } = this;
     return await ctx.helper.seqTransaction(async () => {
       const { rows } = await ctx.model.Blacklist.findAndCountAll({
         where: {
@@ -139,13 +152,7 @@ class BlacklistService extends Service {
         },
       });
 
-      await rows?.syncEach(async item => {
-        ctx.helper.ipsCacheDel(item.ip);
-
-        item?.unblocked || (await ctx.helper.command(`firewall-cmd  --remove-rich-rule "rule family="ipv4" source address="${item.ip}" drop"`));
-
-        ctx.helper.serviceAddSystem(5, item?.unblocked ? `移除已解禁黑名单 IP ${item.ip}` : `移除屏蔽中黑名单 IP ${item.ip}`);
-      });
+      await rows?.syncEach(async item => await ctx.helper.removeDrop(item.ip, item?.unblocked == false));
 
       const response = await ctx.model.Blacklist.destroy({
         where: { id: ids },

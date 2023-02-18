@@ -95,14 +95,14 @@ class settingsController extends Controller {
     if (restart) {
       ctx.helper.response({
         success: true,
-        data: '服务即将重启',
+        data: ctx.helper.getMessage.common(3),
       });
       ctx.helper.command(`sh ${this.app.baseDir}/shell/reload.sh &`);
       // exec(`reboot`);
       // setTimeout(async () => await ctx.helper.command(`shutdown -r now`), 5000);
     } else {
       ctx.helper.response({
-        data: '成功',
+        data: ctx.helper.getMessage.common(1),
       });
     }
   }

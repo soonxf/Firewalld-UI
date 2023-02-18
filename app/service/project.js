@@ -8,14 +8,22 @@ class ProjectService extends Service {
       // await ctx.model.Ip.sync();
       // await ctx.model.Ip.create({ ip: params.ip, site: params.site });
       const findOne = await ctx.model.Project.findOne({ where: { port: params.port } });
-      findOne != null && ctx.helper.throw(`已经绑定过端口${params.port}`);
+      findOne != null && ctx.helper.throw(ctx.helper.getMessage.project(2));
 
       const data = await ctx.model.Project.create({
         ...params,
         sort: (await ctx.model.Project.max('sort')) + 1,
         time: ctx.helper.getFormatNowDate(),
       });
-      return ctx.helper.success(data, () => ctx.helper.serviceAddSystem(6, `新建项目,项目名称:${params.name} 项目端口:${params.port}`));
+      return ctx.helper.success(data, () =>
+        ctx.helper.serviceAddSystem(
+          6,
+          ctx.helper.getMessage.project(0, {
+            name: params.name,
+            port: params.port,
+          })
+        )
+      );
     });
   }
   async getProject({ page = 1, pageSize = 10, portStatus = true }) {
@@ -69,7 +77,7 @@ class ProjectService extends Service {
             }
           )
       );
-      return ctx.helper.success('成功');
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
   async deleteProject({ ids }) {
@@ -79,13 +87,21 @@ class ProjectService extends Service {
         where: { id: ids },
       });
 
-      rows.forEach(item => ctx.helper.serviceAddSystem(7, `删除项目,项目名称:${item.name} 项目端口:${item.port}`));
+      rows.forEach(item =>
+        ctx.helper.serviceAddSystem(
+          7,
+          ctx.helper.getMessage.project(1, {
+            name: item.name,
+            port: item.port,
+          })
+        )
+      );
 
       await ctx.model.Project.destroy({
         where: { id: ids },
       });
 
-      return ctx.helper.success('成功');
+      return ctx.helper.success(ctx.helper.getMessage.common(1));
     });
   }
 }

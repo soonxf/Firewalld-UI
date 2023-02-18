@@ -23,7 +23,7 @@ class ProjectController extends Controller {
       : (await portStatus.syncMap(async protocol => await ctx.helper.triggerChangePort(true, port, protocol))).every(item => item);
 
     // console.log(success);
-    success || ctx.helper.throw('创建失败');
+    success || ctx.helper.throw(ctx.helper.getMessage.common(2));
 
     const { data } = await ctx.service.project.creatdProject(body);
 
@@ -88,7 +88,12 @@ class ProjectController extends Controller {
           })
         ).every(item => item);
 
-    success || ctx.helper.throw(`失败,错误原因:${message.join(',')}`);
+    success ||
+      ctx.helper.throw(
+        ctx.helper.getMessage.project(3, {
+          message,
+        })
+      );
 
     const { data } = await ctx.service.project.deleteProject(body);
 
