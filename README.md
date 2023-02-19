@@ -306,7 +306,7 @@ firewall-cmd --list-ports
 
 #### 部分截图
 
-![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-01-23%20225233.png?raw=true)
+![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/1676831778006.jpg?raw=true)
 
 ![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-01-23%20224657.png?raw=true)
 
