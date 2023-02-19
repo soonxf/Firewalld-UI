@@ -9,7 +9,7 @@
  border-left: 2px solid white;
  transition-duration: 1s;
  margin-bottom:20px;
- transition-property: border-top, 
+ transition-property: border-top,
     border-left, 
     border-bottom,
     border-right,
@@ -59,11 +59,9 @@ button:hover {
  border: 1px solid white;
  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
 }
-
-
-
-
 </style>
+
+
 <div align="center">
 
 ##### 开源不易,点个 🌟🌟🌟 吧!!!
