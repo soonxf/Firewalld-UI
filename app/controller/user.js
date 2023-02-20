@@ -152,7 +152,9 @@ class UserController extends Controller {
 
     const captchaSecret = ctx.helper.captchaJwtSecret(`${text}|${stringRandom(20)}`);
 
-    ctx.helper.response({ data: { publicKey, captchaSecret, svg } });
+    ctx.helper.response({
+      data: { publicKey, captchaSecret, svg, expiredTime: Date.now() + ctx.helper.configDb.get('captcha')?.expiresIn * 60 * 1000 ?? 60 * 1000 },
+    });
   }
   async getPublicKeyFingerprint() {
     const { ctx } = this;
