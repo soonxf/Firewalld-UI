@@ -66,7 +66,7 @@ soonxf@dingtalk.com
 
 ### 目录和文件
 
-* [shell]: 自动化脚本目录
+* **[shell]** 自动化脚本目录
 * [secretKey]: 存放 rsa 密钥,用于加密 token 和 指纹
 * [shell/shell.log]: 记录自动化脚本的日志
 * config.json: 系统设置,同界面化 系统设置 页面
