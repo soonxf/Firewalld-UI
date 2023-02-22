@@ -169,8 +169,7 @@ Admin123456@
 > 将 你的用户名 (五个汉字)替换为自己注册的用户名,完整复制不要丢失
 
 ```shell
-echo -e "注册口令:"  
-$(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";')
+echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "你的用户名";')
 ```
 
 ##### 查看 JWT 密钥
@@ -190,8 +189,7 @@ echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 
 > 复制修改 admin (五个字母)替换为自己注册的用户名,完整复制不要丢失
 
 ```shell
-echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "admin";') &&
-echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
+echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "admin";') && echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
 ```
 ---
 
