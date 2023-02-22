@@ -213,13 +213,13 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 
 ![image](https://raw.githubusercontent.com/soonxf/Micro-Firewall/main/images/1676604602040.jpg)
 
-> 关键字
-> 
-> ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found
-> 
-> 还可以升级系统应该也可以解决哈哈哈哈哈哈...
->
-> 降低 node 版本 应该也是可以的 建议 node 版本>=14
+###### 关键字
+
+> ERROR 24956 nodejs,ER DLOPEN FAILEDError: /lib64/libstdc++.50.6: version "CXXABL 1.3.8' not found 
+
+还可以升级系统应该也可以解决哈哈哈哈哈哈...
+
+降低 node 版本 应该也是可以的 建议 node 版本>=14
 
 ###### 安装 libstdc++
 
