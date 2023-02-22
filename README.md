@@ -300,6 +300,19 @@ firewall-cmd --list-ports
 
 > 注意: 如果访问日志当中出现了 本地地址或者回环地址 请手动将其加入 全部信任 列表
 
+#### 生成 token 或者 fingerprint 密钥失败
+
+* 方法一:安装 ssh-keygen 和 openssl 命令
+* 方法二:手动生成 rsa 密钥
+
+> 方法二需要用到的密钥文件名和目录
+> 
+> 尽量生成 2048 位及以上的 rsa 密钥
+> 
+> 根目录/secretKey/token PRIVATE-KEY.txt PUBLIC-KEY.txt
+> 
+> 根目录/secretKey/fingerprint PRIVATE-KEY.txt PUBLIC-KEY.txt
+
 #### gitee
 
 [Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
