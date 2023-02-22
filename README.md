@@ -42,7 +42,7 @@ soonxf@dingtalk.com
 * linux 系统
 * firewalld 防火墙
 * pm2 守护进程管理器
-* nodejs (首选 16.18.1,推荐 >= 14.0.0)
+* Node.js (首选 16.18.1,推荐 >= 14.0.0)
 
 > 脚本会检测安装 除 firewalld 防火墙外的所有环境,一键部署启动
 
