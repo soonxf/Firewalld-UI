@@ -29,14 +29,6 @@
 
 请务必仔细阅读文档...
 
-### 意见和建议
-
-> 备注问题
-
-```email
-soonxf@dingtalk.com
-```
-
 ##### 要求
 
 * Linux 系统
@@ -319,6 +311,14 @@ firewall-cmd --list-ports
 > 根目录/secretKey/token PRIVATE-KEY.txt PUBLIC-KEY.txt
 > 
 > 根目录/secretKey/fingerprint PRIVATE-KEY.txt PUBLIC-KEY.txt
+
+### 意见和建议
+
+> 备注问题
+
+```email
+soonxf@dingtalk.com
+```
 
 #### gitee
 
