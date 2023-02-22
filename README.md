@@ -15,8 +15,6 @@
 
 ## 演示环境
 
---------
-
 > 演示环境没有部署在 linux ,因此很多功能是失效的
 
 [▶ 点击查看演示 ◀](https://340200.xyz:65001)
@@ -27,8 +25,6 @@
 
 ### 意见和建议
 
----
-
 > 备注问题
 
 ```email
@@ -36,8 +32,6 @@ soonxf@dingtalk.com
 ```
 
 ##### 要求
-
----
 
 * linux 系统
 * firewalld 防火墙
@@ -67,8 +61,6 @@ soonxf@dingtalk.com
 
 ### 目录和文件
 
----
-
 * **[shell]:** 自动化脚本目录
 * **[secretKey]:** 存放 rsa 密钥,用于加密 token 和 指纹
 * **[shell/shell.log]:** 记录自动化脚本的日志
@@ -87,8 +79,6 @@ soonxf@dingtalk.com
 > 如 7001 端口被占用,修改 根目录/config/config.prod.js.cluster.listen.port 同步修改 express/config.js.proxy.target 最后面的 端口即可,重启生效
 
 ### startup.sh 脚本
-
----
 
 > 暖心的自动化脚本,做到了那些功能
 
@@ -118,8 +108,6 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 
 ### 部署和运行
 
----
-
 * clone 项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases)
 * 拷贝解压到 linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
@@ -131,8 +119,6 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 
 
 ### 登录和改密
-
----
 
 #### 登录
 
@@ -189,11 +175,8 @@ echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 
 ```shell
 echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM users WHERE username = "admin";') && echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
 ```
----
 
 ### 部署https
-
----
 
 * 将证书存储在 express/ssl
 * 修改 express/config.js 中的 ssl.key ssl.crt
@@ -202,8 +185,6 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 > ssl.key ssl.crt 填入文件名即可,不需要路径,空 (表示空 == "") 表示不启用 https
 
 ### 问题
-
----
 
 ### libstdc++ 报错
 
@@ -263,8 +244,6 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 ### 脚本内替换 node 版本
 
----
-
 将 ./shell/node.sh 和 ./shell/pm2.sh 中出现 node-v16.18.1-linux-x64 的地方全部替换为手动下载的 node 名字
 
 [下载 node](https://nodejs.org/dist/)
@@ -272,21 +251,17 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 #### 手动安装 node
 
----
-
 [手动安装 node](https://blog.340200.xyz/2022/11/26/ruan-jian/linux-an-zhuang-node/)
 
 ### 手动安装 pm2
 
----
-
 [手动安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
----
+-----
 
 ### 解答
 
------
+
 
 #### 加入黑名单失败
 
