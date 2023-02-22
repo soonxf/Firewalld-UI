@@ -120,8 +120,15 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 * 拷贝解压到 Linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
-> 注意:部署成功后一定要在 系统设置 重新生成一下 jwt 密钥 和 captcha 密钥,请勿泄漏两种密钥
+> 注意:
+> 部署成功后一定要
+> 
+> 根目录/secretKey/fingerprint 和 根目录/secretKey/fingerprint 需要删除重新生成
+> 
+> 系统设置 重新生成一下 jwt 密钥 和 captcha 密钥,请勿泄漏两种密钥
+> 
 > 重新生成 JWT 密钥后需要重新修改密码才能登录
+
 
 [▶ 修改密码 ◀](#合并示例)
 
