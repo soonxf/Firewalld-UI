@@ -45,6 +45,7 @@ soonxf@dingtalk.com
 * Node.js (首选 16.18.1,推荐 >= 14.0.0)
 
 脚本会检测安装 除 Firewalld 防火墙外的所有环境,一键部署启动
+
 CentOS 内置 Firewalld
 
 ##### 项目介绍和技术栈
