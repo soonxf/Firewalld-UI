@@ -46,7 +46,7 @@ soonxf@dingtalk.com
 
 脚本会检测安装 除 Firewalld 防火墙外的所有环境,一键部署启动
 
-CentOS 内置 Firewalld
+CentOS7 内置 Firewalld
 
 ##### 项目介绍和技术栈
 
