@@ -257,7 +257,7 @@ cnpm install -registry=https://registry.npm.taobao.org
 
 ### 手动安装 pm2
 
-[教程:安装 pm2 教程](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
+[教程:安装 pm2](https://blog.340200.xyz/2022/12/16/ruan-jian/pm2-de-an-zhuang-he-shi-yong/)
 
 -----
 
