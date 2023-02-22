@@ -43,9 +43,10 @@ soonxf@dingtalk.com
 
 * linux 系统
 * 安装有 firewalld 防火墙
-* nodejs 和 pm2 (node 推荐 16.18.1)
+* nodejs (首选 16.18.1,推荐 >= 14.0.0)
+* pm2 守护进程管理器
 
-> 脚本会检测安装 除 firewalld 防火墙外的所有环境,可以实现一键部署启动
+> 脚本会检测安装 除 firewalld 防火墙外的所有环境,一键部署启动
 
 ##### 项目介绍和技术栈
 
