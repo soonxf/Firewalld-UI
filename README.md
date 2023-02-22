@@ -263,8 +263,6 @@ cnpm -v
 cnpm install -registry=https://registry.npm.taobao.org
 ```
 
----
-
 ### 脚本内替换 node 版本
 
 ---
