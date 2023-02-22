@@ -229,19 +229,23 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 
 ### 脚本下载依赖失败
 
-> 删除根目录 node_modules
+* 删除根目录 node_modules
 
-> 使用 cnpm 下载
+* 使用 cnpm 下载
 
 ```
 npm install -g cnpm -registry=https://registry.npm.taobao.org
 ```
 
-> 如果是 startup.sh 脚本安装的 node , node目录一般在 ./shell/node/node版本号
+* 创建软连接
 
 ```
 ln -s node目录/bin/cnpm /usr/local/bin/cnpm
 ```
+
+如果是 startup.sh 脚本安装的 node , node目录一般在 ./shell/node/node版本号
+
+* 修改 cnpm 镜像
 
 ```
 cnpm config set registry https://registry.npm.taobao.org
