@@ -90,7 +90,7 @@ CentOS7 内置 Firewalld
 * 检测开机启动,自动追加开机脚本(/etc/rc.d/rc.local)
 * 检测完环境后自动启动前后端服务,默认端口 http:5000,https:5001
 
-> 项目根目录运行
+> 项目根目录窗口运行
 
 ```shell
 ./shell/startup.sh
@@ -103,6 +103,13 @@ CentOS7 内置 Firewalld
 ```shell
 chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 ```
+
+> 项目出现没有权限
+
+```shell
+chmod -R 777 项目根目录
+```
+
 
 > 启动完成浏览器打开 本机IP:5000(5001)
 
