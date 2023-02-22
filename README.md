@@ -39,12 +39,13 @@ soonxf@dingtalk.com
 
 ##### 要求
 
-* linux 系统
-* firewalld 防火墙
+* Linux 系统
+* Firewalld 防火墙
 * pm2 守护进程管理器
 * Node.js (首选 16.18.1,推荐 >= 14.0.0)
 
-> 脚本会检测安装 除 firewalld 防火墙外的所有环境,一键部署启动
+> 脚本会检测安装 除 Firewalld 防火墙外的所有环境,一键部署启动
+> CentOS 内置 Firewalld
 
 ##### 项目介绍和技术栈
 
@@ -58,7 +59,7 @@ soonxf@dingtalk.com
 * 使用 jwt 和 浏览器指纹维护前端的登录状态
 * 前后端 根据 IP 的限流措施
 * 基于 sqlite3 的数据库存储,接口使用事务处理数据
-* linux 防火墙 firewall 的使用
+* Linux 防火墙 Firewalld 的使用
 * 自动的检测环境和下载所需的依赖
 * 自动化屏蔽 IP,可以根据 IP 归属地流量和地点关键词规则屏蔽刻意访问
 * 使用 rsa 加密 token 和 指纹等信息
@@ -88,7 +89,7 @@ soonxf@dingtalk.com
 
 > 暖心的自动化脚本,做到了那些功能
 
-* 检测环境 node pm2 firewalld
+* 检测环境 node pm2 Firewalld
 * 自动下载 node pm2 ,自动创建 node pm2 软连接
 * 检测依赖,并自动下载(node_modules)
 * 检测 secretKey 密钥,和自动生成密钥
@@ -115,7 +116,7 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 ### 部署和运行
 
 * clone 项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases)
-* 拷贝解压到 linux 服务器任意目录
+* 拷贝解压到 Linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
 > 注意:部署成功后一定要在 系统设置 重新生成一下 jwt 密钥 和 captcha 密钥,请勿泄漏两种密钥
@@ -154,7 +155,7 @@ Admin123456@
 
 > 项目根目录打开终端执行,
 >
-> linux 环境下执行,没有自带 sqlite3 环境需要自行下载
+> Linux 环境下执行,没有自带 sqlite3 环境需要自行下载
 >
 > 将 你的用户名 (五个汉字)替换为自己注册的用户名,完整复制不要丢失
 
@@ -164,7 +165,7 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 
 ##### 查看 JWT 密钥
 
-> 项目根目录打开 linux 终端执行,完整复制不要丢失
+> 项目根目录打开 Linux 终端执行,完整复制不要丢失
 
 ```shell
 echo -e "JWT 密钥:" $(grep secret ./config.json | head -n 1 | awk '{ print $2 }' | sed 's/\"//g')
