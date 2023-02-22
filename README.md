@@ -66,18 +66,18 @@ soonxf@dingtalk.com
 
 ### 目录和文件
 
-* **[shell]** 自动化脚本目录
-* [secretKey]: 存放 rsa 密钥,用于加密 token 和 指纹
-* [shell/shell.log]: 记录自动化脚本的日志
-* config.json: 系统设置,同界面化 系统设置 页面
-* express 前端根目录
-  * express/ssl: 存放 https 证书
-  * express/dist: 前端静态资源
-  * express/config.js: 前端配置文件
-  * express/config.js.httpPort: http 端口
-  * express/config.js.httpsPort: https 端口(没有部署 https 证书无法访问)
-  * express/config.js.limiter: 前端流量限制配置
-  * express/config.js.proxy.target:代理的后端路径
+* **[shell]:** 自动化脚本目录
+* **[secretKey]:** 存放 rsa 密钥,用于加密 token 和 指纹
+* **[shell/shell.log]:** 记录自动化脚本的日志
+* **[config.json]:** 系统设置,同界面化 系统设置 页面
+* **[express]:** 前端根目录
+  * **[express/ssl]:** 存放 https 证书
+  * **[express/dist]:** 前端静态资源
+  * **[express/config.js]:** 前端配置文件
+  * **[express/config.js.httpPort]:** http 端口
+  * **[express/config.js.httpsPort]:** https 端口(没有部署 https 证书无法访问)
+  * **[express/config.js.limiter]:** 前端流量限制配置
+  * **[express/config.js.proxy.target]:**代理的后端路径
 
 [▶ 部署 https ◀](#部署https)
 
