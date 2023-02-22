@@ -11,7 +11,7 @@
 
 </div>
 
-Micro-Firewall 基于 linux 的 node 微型界面化防火墙,支持自定义创建屏蔽规则,根据规则自动屏蔽 IP
+基于 Node.js 适用于 个人服务器 和 nas 的 Firewalld 界面化,不需要记忆操作命令,更没有 Firewalld 的区域概念,和 iptables 复杂的 表链结构 .界面上点击创建一些规则就可以达到屏蔽和放行 IP 的目的.
 
 ## 演示环境
 
