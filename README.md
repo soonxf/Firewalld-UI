@@ -112,6 +112,8 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 * 拷贝解压到 Linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
+运行见 startup.sh 脚本 标题
+
 > 注意:
 > 部署成功后一定要
 
