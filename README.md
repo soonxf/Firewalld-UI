@@ -128,6 +128,9 @@ chmod -R 777 项目根目录
 * 系统设置 重新生成 jwt 密钥 和 captcha 密钥
 * 重新生成 JWT 密钥后需要重新修改密码才能登录
 
+[▶ 修改密码 ◀](#合并示例)
+
+
 #### 手动运行
 
 > 确保 根目录 和 express 的依赖都已经下载完成(node_modules)
@@ -149,9 +152,6 @@ node index.js
 ```
 pm2 start index.js --name=HttpServer --exp-backoff-restart-delay=1000
 ```
-
-[▶ 修改密码 ◀](#合并示例)
-
 
 ### 登录和改密
 
