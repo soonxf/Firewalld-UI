@@ -132,13 +132,13 @@ chmod -R 777 项目根目录
 
 > 确保 根目录 和 express 的依赖都已经下载完成(node_modules)
 
-* 根目录目录执行启动后端
+* 根目录执行
   
 ```
 npm run start
 ```
 
-* express 目录执行启动前端
+* express 目录执行
 
 ```
 node index.js
