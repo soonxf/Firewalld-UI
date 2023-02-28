@@ -117,7 +117,7 @@ chmod -R 777 项目根目录
 
 ### 部署和运行
 
-* 克隆项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases) [Gitee](https://gitee.com/SOONXFGetee/Firewalld-UI/releases)
+* 克隆项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases) 
 * 拷贝解压到 Linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
@@ -129,6 +129,8 @@ chmod -R 777 项目根目录
 * 根目录/secretKey/fingerprint(token) 下面的密钥文件删除重新生成 
 * 系统设置 重新生成 jwt 密钥 和 captcha 密钥
 * 重新生成 JWT 密钥后需要重新修改密码才能登录
+
+[Gitee releases](https://gitee.com/SOONXFGetee/Firewalld-UI/releases)
 
 [▶ 修改密码 ◀](#合并示例)
 
