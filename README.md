@@ -130,7 +130,7 @@ chmod -R 777 项目根目录
 * 系统设置 重新生成 jwt 密钥 和 captcha 密钥
 * 重新生成 JWT 密钥后需要重新修改密码才能登录
 
-[Gitee releases](https://gitee.com/SOONXFGetee/Firewalld-UI/releases)
+[下载慢建议使用 Gitee](https://gitee.com/SOONXFGetee/Firewalld-UI/releases)
 
 [▶ 修改密码 ◀](#合并示例)
 
