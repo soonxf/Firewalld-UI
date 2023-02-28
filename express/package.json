@@ -26,7 +26,8 @@
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
     "helmet": "^6.0.1",
-    "http-proxy-middleware": "^2.0.6"
+    "http-proxy-middleware": "^2.0.6",
+    "spdy": "^4.0.2"
   },
   "description": "",
   "devDependencies": {

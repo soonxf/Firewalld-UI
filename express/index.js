@@ -1,5 +1,5 @@
 const express = require('express');
-
+const spdy = require('spdy');
 const rateLimit = require('express-rate-limit');
 
 const helmet = require('helmet');
@@ -8,7 +8,6 @@ const path = require('path');
 const config = require(path.join(process.cwd(), './config'));
 
 const fs = require('fs');
-const https = require('https');
 const http = require('http');
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
@@ -75,6 +74,15 @@ httpServer.listen(config.httpPort, () => console.log('http:' + config.httpPort))
 httpServer.on('connection', socket => socket.setTimeout(config.setTimeout));
 
 if (key == '' || cert == '') return;
-const httpsServer = https.createServer({ key, cert }, app);
+const httpsServer = spdy.createServer(
+  {
+    key,
+    cert,
+    spdy: {
+      protocols: ['h2', 'spdy/3.1', 'spdy/3', 'spdy/2', 'http/1.1', 'http/1.0'],
+    },
+  },
+  app
+);
 httpsServer.listen(config.httpsPort, () => console.log('https:' + config.httpsPort));
 httpsServer.on('connection', socket => socket.setTimeout(config.setTimeout));
