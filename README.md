@@ -27,6 +27,8 @@
 
 #### [▶ 必看:可能会出现的问题 ◀](#问题)
 
+#### [▶ Gitee (国内速度快) ◀](https://gitee.com/SOONXFGetee/Firewalld-UI)
+
 请务必仔细阅读文档...
 
 ### 要求
@@ -349,10 +351,6 @@ firewall-cmd --list-ports
 ```email
 soonxf@dingtalk.com
 ```
-
-#### gitee
-
-[Micro-Firewall](https://gitee.com/SOONXFGetee/micro-firewall)
 
 #### 完整启动流程截图
 
