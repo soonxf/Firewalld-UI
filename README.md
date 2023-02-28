@@ -13,7 +13,7 @@
 
 基于 <B>Node.js</B> 适用于 <B>个人服务器</B> 和 <B>NAS</B> 的 <B>Firewalld 界面化</B>,不需要记忆操作命令,更没有 Firewalld 的区域概念,和 iptables 复杂的 表链结构 .界面上点击创建一些规则就可以达到 <B>自动</B> 屏蔽和放行 IP 的目的.
 
-#### [▶ Gitee 码云 (国内) ◀](https://gitee.com/SOONXFGetee/Firewalld-UI)
+#### [Gitee 码云 (国内极速)](https://gitee.com/SOONXFGetee/Firewalld-UI)
 
 ## 演示环境
 
