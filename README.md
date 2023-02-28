@@ -13,6 +13,8 @@
 
 基于 <B>Node.js</B> 适用于 <B>个人服务器</B> 和 <B>NAS</B> 的 <B>Firewalld 界面化</B>,不需要记忆操作命令,更没有 Firewalld 的区域概念,和 iptables 复杂的 表链结构 .界面上点击创建一些规则就可以达到 <B>自动</B> 屏蔽和放行 IP 的目的.
 
+#### [▶ Gitee 码云 (国内) ◀](https://gitee.com/SOONXFGetee/Firewalld-UI)
+
 ## 演示环境
 
 > 演示环境没有部署在 linux ,因此很多功能是失效的 
@@ -26,8 +28,6 @@
 #### [▶ 一些问题的解答 ◀](#解答)
 
 #### [▶ 必看:可能会出现的问题 ◀](#问题)
-
-#### [▶ Gitee (国内速度快) ◀](https://gitee.com/SOONXFGetee/Firewalld-UI)
 
 请务必仔细阅读文档...
 
@@ -117,7 +117,7 @@ chmod -R 777 项目根目录
 
 ### 部署和运行
 
-* 克隆项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases)
+* 克隆项目 或者下载 [releases](https://github.com/soonxf/Micro-Firewall/releases) [Gitee](https://gitee.com/SOONXFGetee/Firewalld-UI/releases)
 * 拷贝解压到 Linux 服务器任意目录
 * 项目根目录运行 startup.sh 脚本即部署成功
 
