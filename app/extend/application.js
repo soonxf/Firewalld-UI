@@ -5,6 +5,7 @@ const crypto = require('crypto');
 module.exports = {
   //查询是否刚开机查询黑名单(开机180秒内启动即算刚开机),
   ipsCache: [],
+  pid: null,
   isStartUp() {
     const { ctx } = this;
     return new Promise(async (resolve, reject) => {
@@ -56,63 +57,63 @@ module.exports = {
 
       reload
         ? ctx.helper
-            .serviceAddSystem(
-              3,
-              ctx.helper.getMessage.application(5, {
+          .serviceAddSystem(
+            3,
+            ctx.helper.getMessage.application(5, {
+              ip: item.ip,
+              surplus,
+            })
+          )
+          .then(() =>
+            this.getLogger('drop').info(
+              ctx.helper.getMessage.application(6),
+              ctx.helper.getMessage.application(7, {
+                port: item.port,
                 ip: item.ip,
+                site: item.site,
                 surplus,
               })
             )
-            .then(() =>
-              this.getLogger('drop').info(
-                ctx.helper.getMessage.application(6),
-                ctx.helper.getMessage.application(7, {
-                  port: item.port,
+          )
+        : await ctx.helper.drop(item.ip, surplus).then(({ err, stdout, stderr, success }) => {
+          success
+            ? (() => {
+              del &&
+                this.getLogger('drop').info(
+                  ctx.helper.getMessage.application(8),
+                  ctx.helper.getMessage.application(7, {
+                    port: item.port,
+                    ip: item.ip,
+                    site: item.site,
+                    surplus,
+                  })
+                );
+              del &&
+                ctx.helper.serviceAddSystem(
+                  3,
+                  ctx.helper.getMessage.application(9, {
+                    ip: item.ip,
+                    surplus,
+                  })
+                );
+            })()
+            : ctx.helper
+              .serviceAddSystem(
+                3,
+                ctx.helper.getMessage.application(10, {
                   ip: item.ip,
-                  site: item.site,
                   surplus,
                 })
               )
-            )
-        : await ctx.helper.drop(item.ip, surplus).then(({ err, stdout, stderr, success }) => {
-            success
-              ? (() => {
-                  del &&
-                    this.getLogger('drop').info(
-                      ctx.helper.getMessage.application(8),
-                      ctx.helper.getMessage.application(7, {
-                        port: item.port,
-                        ip: item.ip,
-                        site: item.site,
-                        surplus,
-                      })
-                    );
-                  del &&
-                    ctx.helper.serviceAddSystem(
-                      3,
-                      ctx.helper.getMessage.application(9, {
-                        ip: item.ip,
-                        surplus,
-                      })
-                    );
-                })()
-              : ctx.helper
-                  .serviceAddSystem(
-                    3,
-                    ctx.helper.getMessage.application(10, {
-                      ip: item.ip,
-                      surplus,
-                    })
-                  )
-                  .then(() =>
-                    this.getLogger('drop').info(
-                      ctx.helper.getMessage.common(4),
-                      ctx.helper.getMessage.application(11, {
-                        ip: item.ip,
-                      })
-                    )
-                  );
-          });
+              .then(() =>
+                this.getLogger('drop').info(
+                  ctx.helper.getMessage.common(4),
+                  ctx.helper.getMessage.application(11, {
+                    ip: item.ip,
+                  })
+                )
+              );
+        });
     });
   },
   parseIpSite(ip) {
@@ -163,6 +164,7 @@ module.exports = {
     //过滤连接日志输出,规定时间内已经输出的或加入黑名单内的不再输出
     await ctx.service.access.addAccessLog({ ...parse, site: parse.fullSite });
     ctx.helper.logCachePut(parse.ip, parse.port, parse, this.config?.accessLog?.interval ?? 30);
+    this.messenger.sendToApp("logCachePut", parse)
   },
   async addIpset() {
     const { ctx } = this;
@@ -211,18 +213,18 @@ module.exports = {
     } = await ctx.service.blacklist.addBlacklist({ ip, port, expirationTime, site: fullSite, time });
     success
       ? ctx.helper.serviceAddSystem(
-          4,
-          ctx.helper.getMessage.application(12, {
-            ip,
-            expirationTime,
-          })
-        )
+        4,
+        ctx.helper.getMessage.application(12, {
+          ip,
+          expirationTime,
+        })
+      )
       : ctx.helper.serviceAddSystem(
-          4,
-          ctx.helper.getMessage.application(13, {
-            message,
-          })
-        );
+        4,
+        ctx.helper.getMessage.application(13, {
+          message,
+        })
+      );
     return true;
   },
   async addRule(item, expirationTime = 259200) {
@@ -289,6 +291,7 @@ module.exports = {
     return ciphertext === password;
   },
   async serverDidReady() {
+    this.pid = process.pid
     this.server.on('timeout', socket => this.ctx.helper.systemTimeOut());
     this.loader.loadToApp(directory, 'validate');
     await this.startUp();
@@ -297,6 +300,9 @@ module.exports = {
       this.messenger.on('netstat', async data => {
         await data?.syncEach(async item => await this.addIpsCache(item));
       });
+    });
+    this.messenger.on('logCachePut', async parse => {
+      this.ctx.helper.logCachePut(parse.ip, parse.port, parse, this.config?.accessLog?.interval ?? 30);
     });
   },
   beforeClose() {

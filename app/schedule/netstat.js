@@ -5,7 +5,7 @@ module.exports = app => {
   return {
     schedule: {
       interval: `${app.config?.firewalld?.duration ?? 1}s`,
-      type: 'all', // 指定所有的 worker 都需要执行
+      type: 'worker', // 指定所有的 worker 都需要执行
       immediate: false,
     },
     async task(ctx) {
@@ -23,7 +23,8 @@ module.exports = app => {
         response.on('close', code => {
           const data = list?.split(/\n{1,}/g) ?? [];
           data?.[data.length - 1] == '' && data.pop();
-          ctx.app.messenger.sendToApp('netstat', data);
+          // ctx.app.messenger.sendToApp('netstat', data);
+          app.pid && app.messenger.sendTo(app.pid, 'netstat', data);
         });
       } catch (error) {
         ctx.logger.error(error);

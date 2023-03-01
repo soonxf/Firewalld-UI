@@ -4,7 +4,7 @@ module.exports = app => {
     schedule: {
       interval: `${app.config?.firewalld?.interval ?? 1}m`,
       // interval: `10s`,
-      type: 'all',
+      type: 'worker',
       immediate: false,
     },
     async task(ctx) {
