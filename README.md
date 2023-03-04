@@ -13,6 +13,8 @@
 
 基于 <B>Node.js</B> 适用于 <B>个人服务器</B> 和 <B>NAS</B> 的 <B>Firewalld 界面化</B>,不需要记忆操作命令,更没有 Firewalld 的区域概念,和 iptables 复杂的 表链结构 .界面上点击创建一些规则就可以达到 <B>自动</B> 屏蔽和放行 IP 的目的.
 
+关键词: 小型 个人 微型 防火墙 安装 界面 界面化 图形 图形化 防止攻击 屏蔽 访问记录 屏蔽名单
+
 #### [Gitee 码云 (国内极速)](https://gitee.com/SOONXFGetee/Firewalld-UI)
 
 ## 演示环境
@@ -380,10 +382,3 @@ soonxf@dingtalk.com
 ![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-01-23%20224842.png?raw=true)
 
 ![image](https://github.com/soonxf/Micro-Firewall/blob/main/images/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-01-23%20225144.png?raw=true)
-
-关键词: 小型 个人 微型 防火墙 安装 界面 界面化 图形 图形化 防止攻击 屏蔽 访问记录 屏蔽名单
-
-
-
-
-
