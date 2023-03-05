@@ -136,7 +136,6 @@ chmod -R 777 项目根目录
 * 根目录/secretKey/fingerprint(token) 下面的密钥文件删除重新生成 
 * 系统设置 重新生成 jwt 密钥 和 captcha 密钥
 * 重新生成 JWT 密钥后需要重新修改密码才能登录
-* 
 
 [▶ 修改密码 ◀](#合并示例)
 
