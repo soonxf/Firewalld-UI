@@ -114,8 +114,10 @@ chmod -R 777 ./shell/startup.sh && ./shell/startup.sh
 chmod -R 777 项目根目录
 ```
 
+### 检测部署
 
-> 启动完成浏览器打开 本机IP:5000(5001)
+* 前端:启动完成浏览器打开 本机IP:5000(5001) 
+* 后端:启动完成浏览器打开 本机IP:5000(5001)/api/getPublicKeyFingerprint
 
 ### 部署和运行
 
@@ -133,6 +135,7 @@ chmod -R 777 项目根目录
 * 根目录/secretKey/fingerprint(token) 下面的密钥文件删除重新生成 
 * 系统设置 重新生成 jwt 密钥 和 captcha 密钥
 * 重新生成 JWT 密钥后需要重新修改密码才能登录
+* 
 
 [▶ 修改密码 ◀](#合并示例)
 
