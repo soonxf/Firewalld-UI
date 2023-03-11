@@ -229,6 +229,10 @@ echo -e "注册口令:" $(sqlite3 ./database/sqlite-prod.db 'SELECT secret FROM 
 
 ### 问题
 
+### 验证码加载不出来
+
+可能后端未部署成功,解决启动过程中的异常即可.
+
 ### libstdc++ 报错
 
 如图
